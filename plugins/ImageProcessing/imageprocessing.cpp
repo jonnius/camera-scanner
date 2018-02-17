@@ -152,7 +152,7 @@ vector<Contour>
 findContours(Mat src)
 {
 	// Scale to height of 500
-	double ratio = src.size().height / 500.0;
+	float ratio = src.size().height / 500.0;
 	int height = 500;
 	int width = static_cast<int>(src.size().width / ratio);
 	Size size(width, height);
@@ -269,7 +269,7 @@ Quadrilateral
 getQuadrilateral(vector<Contour> contours, Size srcSize)
 {
 	// Scale to height of 500
-	double ratio = srcSize.height / 500.0;
+	float ratio = srcSize.height / 500.0;
 	int height = 500;
 	int width = static_cast<int>(srcSize.width / ratio);
 	Size size(width, height);
@@ -281,7 +281,7 @@ getQuadrilateral(vector<Contour> contours, Size srcSize)
 		Mat(contours[ic]).copyTo(c2f);
 
 		// Get contour length
-		double peri = arcLength(c2f, true);
+		float peri = arcLength(c2f, true);
 		vector<Point2f> approx;
 
 		// Approx. polygone
@@ -325,7 +325,7 @@ fourPointTransform(Mat src, vector<Point> pts)
 	assert(pts.size() >= 4);
 
 	// Scale to height of 500
-	double ratio = src.size().height / 500.0;
+	float ratio = src.size().height / 500.0;
 
 	cout << "Ratio: " << ratio << endl;
 
@@ -334,16 +334,16 @@ fourPointTransform(Mat src, vector<Point> pts)
 	Point br = pts[2];
 	Point bl = pts[3];
 
-	double widthA = sqrt(pow(br.x - bl.x, 2) + pow(br.y - bl.y, 2));
-	double widthB = sqrt(pow(tr.x - tl.x, 2) + pow(tr.y - tl.y, 2));
+	float widthA = sqrt(pow(br.x - bl.x, 2) + pow(br.y - bl.y, 2));
+	float widthB = sqrt(pow(tr.x - tl.x, 2) + pow(tr.y - tl.y, 2));
 
-	double dw = max(widthA, widthB)*ratio;
+	float dw = max(widthA, widthB)*ratio;
 	int maxWidth = static_cast<int>(dw);
 
-	double heightA = sqrt(pow(tr.x - br.x, 2) + pow(tr.y - br.y, 2));
-	double heightB = sqrt(pow(tl.x - bl.x, 2) + pow(tl.y - bl.y, 2));
+	float heightA = sqrt(pow(tr.x - br.x, 2) + pow(tr.y - br.y, 2));
+	float heightB = sqrt(pow(tl.x - bl.x, 2) + pow(tl.y - bl.y, 2));
 
-	double dh = max(heightA, heightB)*ratio;
+	float dh = max(heightA, heightB)*ratio;
 	int maxHeight = static_cast<int>(dh);
 
 	Mat doc(maxHeight, maxWidth, CV_8UC4);
@@ -382,8 +382,8 @@ colorThresh(Mat &src, const int & threshold)
 	{
 		for(int j = 0; j < src.cols; j++)
 		{
-			double maxC = max(max(src.at<Vec3b>(i, j)[0], src.at<Vec3b>(i, j)[1]), src.at<Vec3b>(i, j)[2]);
-			double meanC = static_cast<double>(src.at<Vec3b>(i, j)[0] + src.at<Vec3b>(i, j)[1] + src.at<Vec3b>(i, j)[2]) / 3.0;
+			float maxC = max(max(src.at<Vec3b>(i, j)[0], src.at<Vec3b>(i, j)[1]), src.at<Vec3b>(i, j)[2]);
+			float meanC = static_cast<float>(src.at<Vec3b>(i, j)[0] + src.at<Vec3b>(i, j)[1] + src.at<Vec3b>(i, j)[2]) / 3.0;
 
 			if (src.at<Vec3b>(i, j) != Vec3b(255, 255, 255))
 			{
@@ -406,8 +406,8 @@ enhanceDocument(Mat src)
 	bool colorMode = true;
 	bool filterMode = true;
 	int colorThr = 110;
-    double colorGain = 1.5;       // contrast
-	double colorBias = 0; // bright
+    float colorGain = 1.5;       // contrast
+	float colorBias = 0; // bright
 
 	if (colorMode && filterMode)
 	{
