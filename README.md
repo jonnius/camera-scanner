@@ -1,2 +1,3 @@
-# camera-scanner
-Ubuntu Touch Camera Scanner App
+# Camera Scanner
+
+Use your camera to scan documents

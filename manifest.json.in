@@ -1,0 +1,15 @@
+{
+    "name": "camerascanner.jonius",
+    "description": "Use your camera to scan documents",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Camera Scanner",
+    "hooks": {
+        "camerascanner": {
+            "apparmor": "camerascanner.apparmor",
+            "desktop":  "camerascanner.desktop"
+        }
+    },
+    "version": "1.0.0",
+    "maintainer": "Jonatan Hatakeyama Zeidler <jonatan_zeidler@gmx.de>",
+    "framework" : "ubuntu-sdk-15.04.6"
+}
