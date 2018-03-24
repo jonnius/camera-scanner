@@ -7,16 +7,19 @@
 
 class ImageProcessing: public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    ImageProcessing();
-    ~ImageProcessing() = default;
+  ImageProcessing();
+  ~ImageProcessing() = default;
 
-    Q_INVOKABLE void speak();
+  Q_INVOKABLE void speak();
 
 public slots:
-    void processImage(const QImage & image);
+  void processImage(const QImage & image);
+  std::vector<cv::Point> getContour();
+  std::vector<cv::Point> getQuadrilateral();
+  cv::Mat getResult();
 
 private:
   DocumentScanner::CDocument m_document;

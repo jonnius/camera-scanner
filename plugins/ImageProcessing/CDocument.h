@@ -49,7 +49,7 @@ public:
 
 private:
 	Contour m_contour;
-  std::vector<cv::Point> m_points; //TODO: Überprüfen, ob das nicht mit m_contour identisch ist
+  std::vector<cv::Point> m_points;
   bool m_initialized;
 };
 
@@ -77,6 +77,21 @@ public:
   	m_processed.release();
   	m_original.release();
     m_quadrilateral.release();
+  }
+
+  std::vector<cv::Point> getContour()
+  {
+    return m_quadrilateral.getContour();
+  }
+
+  std::vector<cv::Point> getQuadrilateral()
+  {
+    return m_quadrilateral.getPoints();
+  }
+
+  cv::Mat getResult()
+  {
+    return m_processed;
   }
 
 private:

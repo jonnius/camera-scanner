@@ -143,7 +143,7 @@ bool insideArea(vector<Point> rp, Size size)
 		&& rp[3].x <= leftPos  && rp[3].y >= bottomPos;
 }
 
-CQuadrilateral getCQuadrilateral(vector<Contour> contours, Size srcSize)
+CQuadrilateral findQuadrilateral(vector<Contour> contours, Size srcSize)
 {
 	// Scale to height of 500
 	float ratio = srcSize.height / 500.0;
@@ -323,7 +323,7 @@ void CDocument::detectDocument(const cv::Mat & inputRgba)
 
 	vector<Contour> contours = findContours(inputRgba);
 
-	CQuadrilateral quad = getCQuadrilateral(contours, inputRgba.size());
+	CQuadrilateral quad = findQuadrilateral(contours, inputRgba.size());
 
 	Mat doc;
 
