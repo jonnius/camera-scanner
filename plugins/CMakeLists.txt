@@ -44,7 +44,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Shared libs seem to complicate debugging")
 #else()
 #  message("BUILD_OPENCV ist nicht definiert")
 #endif()
-add_subdirectory(opencv)
+#add_subdirectory(opencv)
 #set(Test $ENV{WINDOWPATH})
 
 #if(${BUILD_OPENCV})

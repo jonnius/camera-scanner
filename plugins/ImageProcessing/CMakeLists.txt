@@ -4,7 +4,8 @@ set(PLUGIN "ImageProcessing")
 set(
     SRC
     plugin.cpp
-    imageprocessing.cpp
+    ImageProcessing.cpp
+    CDocument.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

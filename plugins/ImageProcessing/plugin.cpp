@@ -2,7 +2,7 @@
 #include <QtQml/QQmlContext>
 
 #include "plugin.h"
-#include "imageprocessing.h"
+#include "ImageProcessing.h"
 
 void ImageProcessingPlugin::registerTypes(const char *uri) {
     //@uri ImageProcessing

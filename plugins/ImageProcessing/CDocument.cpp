@@ -1,130 +1,17 @@
-#include <QDebug>
-#include "imageprocessing.h"
+#include "CDocument.h"
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
-//#include "highgui.h"
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 
-int main();
-
-ImageProcessing::ImageProcessing() {
-
-}
-
-void ImageProcessing::speak() {
-    qDebug() << "hello world!";
-    main();
-}
-
-
-
 using namespace cv;
 using namespace std;
-
-typedef vector<Point> Contour;
-
-class Quadrilateral
-{
-public:
-	Quadrilateral()
-	{
-		m_initialized = false;
-	}
-
-    Quadrilateral(Contour contour, vector<Point> points) :
-    	m_contour(contour), m_points(points)
-    {
-		m_initialized = true;
-    }
-
-    bool
-	initialized()
-    {
-    	return m_initialized;
-    }
-
-    void
-	release()
-    {
-    	return m_contour.clear();
-    }
-
-    Contour
-	getContour()
-    {
-    	return m_contour;
-    }
-
-    vector<Point>
-    getPoints()
-	{
-    	return m_points;
-	}
-
-private:
-	Contour m_contour;
-    vector<Point> m_points;
-    bool m_initialized;
-};
-
-class ScannedDocument
-{
-public:
-    ScannedDocument(const Mat & original) :
-    	m_original(original)
-    {
-    	/* empty */
-    }
-
-    Mat
-	getProcessed() {
-        return m_processed;
-    }
-
-    void
-	setProcessed(Mat processed) {
-        m_processed = processed;
-    }
-
-    void
-	release()
-    {
-		m_processed.release();
-		m_original.release();
-        m_quadrilateral.release();
-    }
-
-    void
-	setPreviewPoints(const vector<Point> & previewPoints)
-    {
-    	m_previewPoints = previewPoints;
-    }
-
-    void
-	setPreviewSize(const Size & previewSize)
-    {
-    	m_previewSize = previewSize;
-    }
-
-    void
-	setQuadrilateral(const Quadrilateral & quadrilateral)
-    {
-    	m_quadrilateral = quadrilateral;
-    }
-
-private:
-	Mat m_original;
-    Mat m_processed;
-    Quadrilateral m_quadrilateral;
-    vector<Point> m_previewPoints;
-    Size m_previewSize;
-};
+using namespace DocumentScanner;
 
 struct ContourSort
 {
@@ -148,8 +35,8 @@ struct diffComparator
 	}
 };
 
-vector<Contour>
-findContours(Mat src)
+
+vector<Contour> findContours(Mat src)
 {
 	// Scale to height of 500
 	float ratio = src.size().height / 500.0;
@@ -169,12 +56,6 @@ findContours(Mat src)
 	vector<Contour> contours;
 	Mat hierarchy;
 
-//	namedWindow( "[findContours] grayimage", CV_WINDOW_AUTOSIZE );
-//	imshow( "[findContours] grayimage", grayImage );
-
-//	namedWindow( "[findContours] cannedImage", CV_WINDOW_AUTOSIZE );
-//	imshow( "[findContours] cannedImage", cannedImage );
-
 	findContours(cannedImage, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
 	hierarchy.release();
@@ -191,11 +72,9 @@ findContours(Mat src)
 	return contours;
 }
 
-vector<Point>
-sortPoints(vector<Point> src)
+vector<Point> sortPoints(vector<Point> src)
 {
 	vector<Point> srcPoints = src;
-	// TODO: Originally the result list was filled with NULL pointers
 	vector<Point> result(4);
 
 	// top-left corner = minimal sum
@@ -213,8 +92,7 @@ sortPoints(vector<Point> src)
 	return result;
 }
 
-bool
-insideArea(vector<Point> rp, Size size)
+bool insideArea(vector<Point> rp, Size size)
 {
 	int width = size.width;
 	int height = size.height;
@@ -265,8 +143,7 @@ insideArea(vector<Point> rp, Size size)
 		&& rp[3].x <= leftPos  && rp[3].y >= bottomPos;
 }
 
-Quadrilateral
-getQuadrilateral(vector<Contour> contours, Size srcSize)
+CQuadrilateral getCQuadrilateral(vector<Contour> contours, Size srcSize)
 {
 	// Scale to height of 500
 	float ratio = srcSize.height / 500.0;
@@ -311,16 +188,15 @@ getQuadrilateral(vector<Contour> contours, Size srcSize)
 
 			if (insideArea(foundPoints, size))
 			{
-				return Quadrilateral(contours[ic], foundPoints);
+				return CQuadrilateral(contours[ic], foundPoints);
 			}
 		}
 	}
 
-	return Quadrilateral();
+	return CQuadrilateral();
 }
 
-Mat
-fourPointTransform(Mat src, vector<Point> pts)
+Mat fourPointTransform(Mat src, vector<Point> pts)
 {
 	assert(pts.size() >= 4);
 
@@ -373,8 +249,7 @@ fourPointTransform(Mat src, vector<Point> pts)
  * @param src
  * @param threshold
  */
-void
-colorThresh(Mat &src, const int & threshold)
+void colorThresh(Mat &src, const int & threshold)
 {
 	assert(src.type() == CV_8UC3);
 
@@ -399,8 +274,7 @@ colorThresh(Mat &src, const int & threshold)
 	}
 }
 
-void
-enhanceDocument(Mat src)
+void enhanceDocument(Mat src)
 {
 	//TODO originally class member
 	bool colorMode = true;
@@ -439,18 +313,17 @@ enhanceDocument(Mat src)
 	}
 }
 
-ScannedDocument
-detectDocument(Mat inputRgba)
+void CDocument::detectDocument(const cv::Mat & inputRgba)
 {
 	// TODO These have been members of the handler class
 //    vector<Point> mPreviewPoints;
 //    Size mPreviewSize;
 
+  m_original = inputRgba;
+
 	vector<Contour> contours = findContours(inputRgba);
 
-	ScannedDocument sd(inputRgba);
-
-	Quadrilateral quad = getQuadrilateral(contours, inputRgba.size());
+	CQuadrilateral quad = getCQuadrilateral(contours, inputRgba.size());
 
 	Mat doc;
 
@@ -458,10 +331,10 @@ detectDocument(Mat inputRgba)
 		cout << "Transforming image..." << endl;
 		Contour c = quad.getContour();
 
-		sd.setQuadrilateral(quad);
+		m_quadrilateral = quad;
 		//TODO necessary?
-//		sd.m_previewPoints = mPreviewPoints;
-//		sd.m_previewSize = mPreviewSize;
+//		m_previewPoints = mPreviewPoints;
+//		m_previewSize = mPreviewSize;
 
 		doc = fourPointTransform(inputRgba, quad.getPoints());
 
@@ -471,40 +344,6 @@ detectDocument(Mat inputRgba)
 		inputRgba.copyTo(doc);
 	}
 
-	// TODO
 	enhanceDocument(doc);
-
-	sd.setProcessed(doc);
-	return sd;
-}
-
-
-int main()
-{
-  std::string input = "/home/jonatan/.Programmieren/C++/CameraScanner/Beispiele/Beispiel17.jpg";
-  std::string output = "/home/jonatan/.Programmieren/C++/CameraScanner/Beispiele/Beispiel17_gescannt.jpg";
-
-  Mat image;
-  //image = imread( input , 1 );
-  std::cout << "Loading image from " << input << std::endl;
-
-  if( !image.data )
-	{
-		printf( "No image data \n" );
-		return -1;
-	}
-
-  //ScannedDocument scan = detectDocument(image);
-
-//  namedWindow( "Display Image", CV_WINDOW_AUTOSIZE );
-//  imshow( "Display Image", image );
-//
-  //namedWindow( "Scan Image", CV_WINDOW_AUTOSIZE );
-  //imshow( "Scan Image", scan.getProcessed() );
-
-  //imwrite(output, scan.getProcessed());
-
-  //waitKey(0);
-
-  return 0;
+  m_processed = doc;
 }
