@@ -1,5 +1,4 @@
-# OpenCV
-#option(BUILD_OPENCV "enable/disable" ON)
+# OpenCV (only necessary on 15.04 due to dependency issues in official repos)
 
 ## Give it its own build directory
 set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../opencv_build/)
@@ -18,7 +17,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/imgcodecs/include
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/opencv)
 # We should disable all modules that we don't need
 set(BUILD_LIST "core,imgproc,highgui,imgcodecs" CACHE STRING "Only use core, imgproc, highgui and imgcodecs modules")
-#set(CMAKE_BUILD_TYPE "RELEASE" CACHE STRING "Release configuration")
 # Disable some stuff to reduce build time
 set(BUILD_EXAMPLES OFF CACHE BOOL "No need for examples")
 set(BUILD_DOCS OFF CACHE BOOL "No need for docs")
@@ -37,28 +35,11 @@ set(WITH_OPENCL OFF CACHE BOOL "No idea what this does")
 set(ENABLE_PROFILING ON CACHE BOOL "I guess it helps debugging")
 set(CMAKE_BUILD_TYPE "DEBUG" CACHE STRING "Debug configuration")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Shared libs seem to complicate debugging")
+# If we plan a release:
+#set(CMAKE_BUILD_TYPE "RELEASE" CACHE STRING "Release configuration")
 
 ## Compile OpenCV
-#if(DEFINED ENV{BUILD_OPENCV})
-#  message("BUILD_OPENCV ist definiert")
-#else()
-#  message("BUILD_OPENCV ist nicht definiert")
-#endif()
-#add_subdirectory(opencv)
-#set(Test $ENV{WINDOWPATH})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opencv)
 
-#if(${BUILD_OPENCV})
-#  message("OpenCV bauen")
-#else()
-#  message("OpenCV nicht bauen")
-#endif() 
-
-#if($ENV{SKIP_OPENCV_BUILD})
-#  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opencv)
-#else()
-#  message(${Test})
-#  message("Skipping OpenCV build...")
-#endif()
-
-
+# Our own ImageProcessing
 add_subdirectory(ImageProcessing)
