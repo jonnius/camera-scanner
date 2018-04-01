@@ -11,6 +11,10 @@ namespace DocumentScanner
 
 typedef std::vector<cv::Point> Contour;
 
+/**
+  * CQuadrilateral is a data structure containg contour and
+  * quadrilateral of the detected document inside the image.
+  */
 class CQuadrilateral
 {
 public:
@@ -30,6 +34,9 @@ public:
   	return m_initialized;
   }
 
+  /**
+    * Release memory by deleting points.
+    */
   void release()
   {
     m_initialized = false;
@@ -53,6 +60,11 @@ private:
   bool m_initialized;
 };
 
+/**
+  * CDocument represents one document and its detection inside
+  * an image. It is initialized by specifying an image and will
+  * detect and cut out the document, rectify and enhance it. 
+  */
 class CDocument
 {
 public:
@@ -71,7 +83,11 @@ public:
   cv::Mat getProcessed() {
       return m_processed;
   }
-
+  
+  /**
+    * Release memory. This will let the object in an uninitialized
+    * state. Use detectDocument() to process a new image.
+    */
   void release()
   {
   	m_processed.release();
