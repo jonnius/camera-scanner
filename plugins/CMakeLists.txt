@@ -1,21 +1,16 @@
-# OpenCV (only necessary on 15.04 due to dependency issues in official repos)
-
-## Give it its own build directory
-set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../opencv_build/)
-
 ## Include paths
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/include)
-### Some headers get configured and put into the bin dir by CMake
+include_directories(opencv/include)
+# OpenCV puts platform depended headers into the binary dir 
 include_directories(${CMAKE_BINARY_DIR})
 ### Add necessary modules to include dir
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/core/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/highgui/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/imgproc/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/modules/imgcodecs/include)
+include_directories(opencv/modules/core/include)
+include_directories(opencv/modules/highgui/include)
+include_directories(opencv/modules/imgproc/include)
+include_directories(opencv/modules/imgcodecs/include)
 
 ## CMake Module path
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/opencv)
-# We should disable all modules that we don't need
+list(APPEND CMAKE_MODULE_PATH opencv)
+# We should only enable modules that we need
 set(BUILD_LIST "core,imgproc,highgui,imgcodecs" CACHE STRING "Only use core, imgproc, highgui and imgcodecs modules")
 # Disable some stuff to reduce build time
 set(BUILD_EXAMPLES OFF CACHE BOOL "No need for examples")
@@ -39,7 +34,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Shared libs seem to complicate debugging")
 #set(CMAKE_BUILD_TYPE "RELEASE" CACHE STRING "Release configuration")
 
 ## Compile OpenCV
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opencv)
+add_subdirectory(opencv)
 
 # Our own ImageProcessing
 add_subdirectory(ImageProcessing)

@@ -1,6 +1,5 @@
 {
   "template": "cmake",
   "kill": "qmlscene",
-  "sdk": "ubuntu-sdk-16.04",
-  "make_jobs": 4
+  "sdk": "ubuntu-sdk-16.04"
 }
