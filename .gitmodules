@@ -1,0 +1,4 @@
+[submodule "libs/opencv"]
+	path = libs/opencv
+	url = git@github.com:opencv/opencv.git
+	branch = 3.4
