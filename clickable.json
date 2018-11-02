@@ -1,4 +1,5 @@
 {
   "template": "cmake",
-  "kill": "qmlscene"
+  "kill": "qmlscene",
+  "dir": "build/camera-scanner"
 }
