@@ -10,7 +10,6 @@ execute_process(
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/opencv/${ARCH_TRIPLET}")
-message(${OpenCV_DIR})
 
 find_package(Qt5Core)
 find_package(Qt5Qml)
