@@ -1,8 +1,16 @@
 project(camerascanner C CXX)
 cmake_minimum_required(VERSION 3.0.0)
 
+# Get Architecture triplet
+execute_process(
+    COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
+    OUTPUT_VARIABLE ARCH_TRIPLET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/opencv/${ARCH_TRIPLET}")
+message(${OpenCV_DIR})
 
 find_package(Qt5Core)
 find_package(Qt5Qml)
@@ -10,13 +18,6 @@ find_package(Qt5Quick)
 
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
-
-# Components PATH
-execute_process(
-    COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
-    OUTPUT_VARIABLE ARCH_TRIPLET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
 
 set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
