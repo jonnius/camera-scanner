@@ -2,6 +2,7 @@ project(camerascanner C CXX)
 cmake_minimum_required(VERSION 3.0.0)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/opencv/${ARCH_TRIPLET}")
 
 find_package(Qt5Core)
 find_package(Qt5Qml)

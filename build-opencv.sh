@@ -2,6 +2,7 @@
 
 set -e
 
+SOURCE_DIR_BASE=$PWD
 SOURCE_DIR_BASE_DOCKER=/home/root/camera-scanner
 OPENCV_SOURCE_DIR=libs/opencv
 
@@ -11,7 +12,29 @@ ARCH_TRIPLET="arm-linux-gnueabihf"
 
 DOCKER_COMMAND=""
 JOBS="1"
-SUDO=""
+
+# OpenCV Build args
+OPENCV_BUILD_ARGS="-DCMAKE_CROSSCOMPILING=ON -DCMAKE_BUILD_TYPE=Release"
+# We should only enable modules that we need
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_LIST=core,imgproc,highgui,imgcodecs"
+# Disable some stuff to reduce build time
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_EXAMPLES=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_DOCS=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_PERF_TESTS=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_TESTS=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_OPENCV_APPS=OFF"
+# Enable some stuff to speed it up (just found that somewhere)
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_TBB=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_OPENMP=OFF" # we should try if this speeds up the image processing
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_IPP=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_NVCUVID=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_CUDA=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_CSTRIPES=OFF"
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_OPENCL=OFF"
+# Debug stuff
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DENABLE_PROFILING=ON" #I guess it helps debugging
+OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_SHARED_LIBS=OFF" #Shared libs seem to complicate debugging
+
 
 function usage
 {
@@ -29,12 +52,12 @@ EOF
 function build
 {
     git submodule update --init --recursive
+    mkdir -p $BUILD_DIR
     $DOCKER_COMMAND bash <<-EOF
     #!/bin/bash
     export MAKEFLAGS=-j$JOBS
-    mkdir -p $BUILD_DIR
     cd $BUILD_DIR
-    cmake -DCMAKE_CROSSCOMPILING=ON -DCMAKE_BUILD_TYPE=Release $SOURCE_DIR_BASE_DOCKER/$OPENCV_SOURCE_DIR
+    cmake $OPENCV_BUILD_ARGS $SOURCE_DIR
     cmake --build .
 EOF
 }
@@ -73,11 +96,12 @@ function parse
         esac
     done
 
-    DOCKER_COMMAND="docker run -i -v $PWD:$SOURCE_DIR_BASE_DOCKER -w $SOURCE_DIR_BASE_DOCKER clickable/ubuntu-sdk:16.04-$ARCH"
+    DOCKER_COMMAND="docker run -i -v $SOURCE_DIR_BASE:$SOURCE_DIR_BASE_DOCKER -w $SOURCE_DIR_BASE_DOCKER clickable/ubuntu-sdk:16.04-$ARCH"
+    SOURCE_DIR=$SOURCE_DIR_BASE_DOCKER/$OPENCV_SOURCE_DIR
 
     if [ "$ARCH" == "host" ]; then
         DOCKER_COMMAND=""
-        SUDO="sudo"
+        SOURCE_DIR=$SOURCE_DIR_BASE/$OPENCV_SOURCE_DIR
     fi
 
     return 0
@@ -85,7 +109,7 @@ function parse
 
 parse $*
 
-BUILD_DIR=build/tdlib/$ARCH_TRIPLET
+BUILD_DIR=build/opencv/$ARCH_TRIPLET
 
 if [ $? -eq 1 ]; then
     usage
