@@ -1,6 +1,10 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(PLUGIN "ImageProcessing")
 
+# Find OpenCV
+find_package(OpenCV REQUIRED core imgproc highgui imgcodecs)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 set(
     SRC
     plugin.cpp
