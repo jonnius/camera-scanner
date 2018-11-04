@@ -10,7 +10,7 @@ DEPENDENCY=opencv
 
 # Number of parallel make jobs. Be carefull, increasing this
 # number may lead to massive swapping on machines with low RAM!
-JOBS="1"
+JOBS="4"
 
 # Build arguments
 BUILD_ARGS="-DCMAKE_BUILD_TYPE=Release"
