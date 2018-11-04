@@ -1,20 +1,19 @@
 #!/bin/bash
 
-set -e
+########################
+## Configuration - Start
 
-SOURCE_DIR_BASE=$PWD
-SOURCE_DIR_BASE_DOCKER=/home/root/camera-scanner
-OPENCV_SOURCE_DIR=libs/opencv
+# The name of the dependency, as you named the git submodule.
+# Example: If you git submodule is located under /lib/opencv,
+# you need to set DEPENDENCY=opencv
+DEPENDENCY=opencv
 
-DO_CLEAN=0
-ARCH="armhf"
-ARCH_TRIPLET="arm-linux-gnueabihf"
-
-DOCKER_COMMAND=""
+# Number of parallel make jobs. Be carefull, increasing this
+# number may lead to massive swapping on machines with low RAM!
 JOBS="1"
 
-# OpenCV Build args
-OPENCV_BUILD_ARGS="-DCMAKE_BUILD_TYPE=Release"
+# Build arguments
+BUILD_ARGS="-DCMAKE_BUILD_TYPE=Release"
 # Only build the modules that we need
 OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_LIST=core,imgproc,highgui,imgcodecs"
 # Disable some stuff to reduce build time
@@ -33,12 +32,16 @@ OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_CSTRIPES=OFF"
 OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DWITH_OPENCL=OFF"
 # Static libs
 OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DBUILD_SHARED_LIBS=OFF"
-# Debug stuff
-#OPENCV_BUILD_ARGS="$OPENCV_BUILD_ARGS -DENABLE_PROFILING=ON" #I guess it helps debugging
+
+
+## Configuration  -  End
+########################
+
 
 function usage
 {
-    echo "usage: $0 [arch] [clean]"
+    echo "This script cross compiles a dependency in the clickable docker container (armhf or amd64) or builds it simply for your host architecture (host)."
+    echo "usage: $0 [armhf|amd64|host] [clean]"
 }
 
 function clean
@@ -57,7 +60,7 @@ function build
     #!/bin/bash
     export MAKEFLAGS=-j$JOBS
     cd $BUILD_DIR
-    cmake $OPENCV_BUILD_ARGS $SOURCE_DIR
+    cmake $BUILD_ARGS $SOURCE_DIR
     cmake --build .
 EOF
 }
@@ -73,6 +76,9 @@ function parse
         return 1
     fi
 
+    ARCH="armhf"
+    ARCH_TRIPLET="arm-linux-gnueabihf"
+    DO_CLEAN=0
     for param in $*; do
         case $param in
             "clean")
@@ -96,20 +102,28 @@ function parse
         esac
     done
 
-    DOCKER_COMMAND="docker run -i -v $SOURCE_DIR_BASE:$SOURCE_DIR_BASE_DOCKER -w $SOURCE_DIR_BASE_DOCKER clickable/ubuntu-sdk:16.04-$ARCH"
-    SOURCE_DIR=$SOURCE_DIR_BASE_DOCKER/$OPENCV_SOURCE_DIR
+    return 0
+}
 
+
+function init
+{
     if [ "$ARCH" == "host" ]; then
         DOCKER_COMMAND=""
-        SOURCE_DIR=$SOURCE_DIR_BASE/$OPENCV_SOURCE_DIR
+    else
+        DOCKER_COMMAND="docker run -i -v $PWD:$PWD -w $PWD clickable/ubuntu-sdk:16.04-$ARCH"
     fi
+
+    SOURCE_DIR=$PWD/libs/$DEPENDENCY
+    BUILD_DIR=build/$DEPENDENCY/$ARCH_TRIPLET
 
     return 0
 }
 
+# Parse arguments
+set -e
 parse $*
-
-BUILD_DIR=build/opencv/$ARCH_TRIPLET
+init
 
 if [ $? -eq 1 ]; then
     usage
