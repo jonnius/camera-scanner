@@ -1,10 +1,11 @@
-import QtQuick 2.4
-import QtQuick.Layouts 1.1
+import QtQuick 2.6
+import QtQuick.Layouts 1.3
 import Ubuntu.Components 1.3
 import ImageProcessing 1.0
+import "components"
 
 MainView {
-    id: root
+    id: mainView
     objectName: 'mainView'
     applicationName: 'camerascanner.jonius'
     automaticOrientation: true
@@ -12,19 +13,23 @@ MainView {
     width: units.gu(45)
     height: units.gu(75)
 
-    Page {
-        anchors.fill: parent
+    readonly property color bgColor: "#0e8cba"
+    readonly property color fgColor: "#f7f7f7"
+    readonly property color txtColor: "#3d3d3d"
 
-        header: PageHeader {
-            id: header
-            title: i18n.tr('Camera Scanner')
-        }
+    property var activeTransfer: null
+    property double gridmargin: units.gu(1)
+    property double mingridwidth: units.gu(15)
 
-        Label {
-            anchors.centerIn: parent
-            text: i18n.tr('Hello World!')
-        }
+    PageStack {
+        id: pageStack
+        Component.onCompleted: pageStack.push(mainPage)
     }
 
-    Component.onCompleted: ImageProcessing.speak()
+    MainPage {
+        id: mainPage
+        anchors.fill: parent
+    }
+
+//    Component.onCompleted: ImageProcessing.speak()
 }
