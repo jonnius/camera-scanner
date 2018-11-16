@@ -2,6 +2,7 @@
 #define IMAGEPROCESSING_H
 
 #include <QObject>
+#include <QImage>
 
 #include "CDocument.h"
 
@@ -23,7 +24,7 @@ public:
     * getQuadrilateral() and getResult() to access 
     * (intermediate) results.
     */
-  Q_INVOKABLE QImage processImage(const QImage & image);
+  Q_INVOKABLE QImage processImage(const std::string & imageURL);
   /**
     * Get contour as a result of processImage(). The contour
     * is a polygone containing a list of points along the 

@@ -19,15 +19,11 @@ ImageProcessing::ImageProcessing() {
   /* empty */
 }
 
-QImage ImageProcessing::processImage(const QImage & image)
+QImage ImageProcessing::processImage(const std::string & imageURL)
 {
   qDebug() << "starting to process image...";
-  QImage imgcopy = image.copy();
-  m_document.detectDocument(Mat(imgcopy.height(),
-                                imgcopy.width(),
-                                CV_8UC3,
-                                imgcopy.bits(),
-                                imgcopy.bytesPerLine()));
+  Mat img = imread(imageURL);
+  m_document.detectDocument(img);
 
   qDebug() << "finished image processing...";
   Mat result = m_document.getResult();
