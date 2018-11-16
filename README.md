@@ -15,7 +15,7 @@ See [clickable documentation](http://clickable.bhdouglass.com/) for details.
 
 If you want to build the app for Desktop, you need to build the OpenCV for your computer once, too:
 
-    ./build-opencv.sh host
+    ./build-opencv.sh amd64
 
 Now you can build the app by running
 
