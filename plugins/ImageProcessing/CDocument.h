@@ -111,7 +111,7 @@ public:
   }
 
 private:
-	cv::Mat m_original;
+  cv::Mat m_original;
   cv::Mat m_processed;
   CQuadrilateral m_quadrilateral;
   std::vector<cv::Point> m_previewPoints; // TODO Sinn prüfen

@@ -19,10 +19,6 @@ ImageProcessing::ImageProcessing() {
   /* empty */
 }
 
-void ImageProcessing::speak() {
-  qDebug() << "hello world!";
-}
-
 void ImageProcessing::processImage(const QImage & image)
 {
   qDebug() << "starting to process image...";
@@ -36,17 +32,17 @@ void ImageProcessing::processImage(const QImage & image)
   qDebug() << "finished image processing...";
 }
 
-std::vector<cv::Point> ImageProcessing::getContour()
-{
-  return m_document.getContour();
-}
+//std::vector<cv::Point> ImageProcessing::getContour()
+//{
+//  return m_document.getContour();
+//}
 
-std::vector<cv::Point> ImageProcessing::getQuadrilateral()
-{
-  return m_document.getQuadrilateral();
-}
+//std::vector<cv::Point> ImageProcessing::getQuadrilateral()
+//{
+//  return m_document.getQuadrilateral();
+//}
 
-cv::Mat ImageProcessing::getResult()
-{
-  return m_document.getResult();
-}
+//cv::Mat ImageProcessing::getResult()
+//{
+//  return m_document.getResult();
+//}

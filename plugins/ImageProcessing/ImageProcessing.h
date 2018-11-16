@@ -17,28 +17,25 @@ public:
   ImageProcessing();
   ~ImageProcessing() = default;
 
-  Q_INVOKABLE void speak();
-
-public slots:
   /**
     * Process an image containing a document. This will run 
     * the complete image processing. Use getContour(), 
     * getQuadrilateral() and getResult() to access 
     * (intermediate) results.
     */
-  void processImage(const QImage & image);
+  Q_INVOKABLE void processImage(const QImage & image);
   /**
     * Get contour as a result of processImage(). The contour
     * is a polygone containing a list of points along the 
     * document edges.
     */
-  std::vector<cv::Point> getContour();
+  //Q_INVOKABLE std::vector<cv::Point> getContour();
   /**
     * Get quadrilateral as a result of processImage(). The 
     * quadrilateral is a polygone containing exactly four
     * points representing the document corners.
     */
-  std::vector<cv::Point> getQuadrilateral();
+  //Q_INVOKABLE std::vector<cv::Point> getQuadrilateral();
   /**
     * Get document image as a result of processImage(). The 
     * document image contains the rectified image section
@@ -46,7 +43,7 @@ public slots:
     * contains some image enhancements to improve contrast
     * among others.
     */
-  cv::Mat getResult();
+  //Q_INVOKABLE cv::Mat getResult();
 
 private:
   DocumentScanner::CDocument m_document;
