@@ -4,18 +4,21 @@ import QtQml.Models 2.1
 import QtGraphicalEffects 1.0
 
 Page {
+    property alias imageModel: imageModel
 
     header: CommonHeader {
         id: mainHeader
     }
 
+    ListModel {
+        id: imageModel
+        //ListElement {imgout: "calendaris.png"}
+        //ListElement {imgout: "/home/phablet/.cache/doc-scanner.dslul/1479221316289.jpg_out.png"}
+    }
+
     DelegateModel {
         id: visualModel
-        model: ListModel {
-            id: imageModel
-            //ListElement {imgout: "/home/phablet/.cache/doc-scanner.dslul/screenshot20161108_105748015.png_out.png"}
-            //ListElement {imgout: "/home/phablet/.cache/doc-scanner.dslul/1479221316289.jpg_out.png"}
-        }
+        model: imageModel
 
         delegate: MouseArea {
             id: delegateRoot
@@ -44,7 +47,7 @@ Page {
                         when: icon.Drag.active
                         ParentChange {
                             target: icon
-                            parent: mainPage
+                            parent: mainView
                         }
 
                         AnchorChanges {
@@ -59,18 +62,18 @@ Page {
                     id: mainImg
                     anchors {
                         fill: parent
-                        leftMargin: mainPage.gridmargin
-                        rightMargin: mainPage.gridmargin
-                        topMargin: 1.5*mainPage.gridmargin
-                        bottomMargin: 1.5*mainPage.gridmargin
+                        leftMargin: mainView.gridmargin
+                        rightMargin: mainView.gridmargin
+                        topMargin: 1.5*mainView.gridmargin
+                        bottomMargin: 1.5*mainView.gridmargin
                     }
                     asynchronous: true
                     fillMode: Image.PreserveAspectFit
                     source: Qt.resolvedUrl(model.imgout)
 
                     // Prevent blurry SVGs
-                    sourceSize.width: 2*mainPage.mingridwidth
-                    sourceSize.height: 3*mainPage.mingridwidth
+                    sourceSize.width: 2*mainView.mingridwidth
+                    sourceSize.height: 3*mainView.mingridwidth
 
                     /* Overlay for when image is pressed */
                     Rectangle {
@@ -115,8 +118,6 @@ Page {
                 mouse.accepted = false
                 delegateRoot.drag.target = icon
                 deleteIcon.visible = true
-                btnAdd.visible = false
-                btnExport.visible = false
             }
 
             onReleased: {
@@ -127,8 +128,6 @@ Page {
                 overlay.border.width = 0
                 delegateRoot.drag.target = undefined
                 deleteIcon.visible = false
-                btnAdd.visible = true
-                btnExport.visible = true
             }
         }
     }
@@ -178,13 +177,13 @@ Page {
             right: parent.right
             bottom: parent.bottom
             topMargin: units.gu(2)
-            leftMargin: mainPage.gridmargin
-            rightMargin: mainPage.gridmargin
+            leftMargin: mainView.gridmargin
+            rightMargin: mainView.gridmargin
         }
 
         height: mainView.height/2
         clip: true
-        cellWidth: width / Math.floor(width/mainPage.mingridwidth)
+        cellWidth: width / Math.floor(width/mainView.mingridwidth)
         cellHeight: cellWidth*1.4
 
         displaced: Transition {

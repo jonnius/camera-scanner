@@ -1,6 +1,6 @@
 import QtQuick 2.6
 import Ubuntu.Components 1.3
-
+import Ubuntu.Content 1.3
 
 PageHeader {
     title: i18n.tr('Camera Scanner')
@@ -28,7 +28,7 @@ PageHeader {
 				text: i18n.tr("Add")
 				onTriggered: {
 					Qt.inputMethod.hide();
-					mainPageStack.push(Qt.resolvedUrl("../SettingsPage.qml"));
+					pageStack.push(Qt.resolvedUrl("../ImportPage.qml"),{"contentType": ContentType.Pictures, "handler": ContentHandler.Source})
 				}
 			},
 			Action {
