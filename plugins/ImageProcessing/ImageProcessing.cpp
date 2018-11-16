@@ -19,7 +19,7 @@ ImageProcessing::ImageProcessing() {
   /* empty */
 }
 
-void ImageProcessing::processImage(const QImage & image)
+QImage ImageProcessing::processImage(const QImage & image)
 {
   qDebug() << "starting to process image...";
   QImage imgcopy = image.copy();
@@ -30,6 +30,8 @@ void ImageProcessing::processImage(const QImage & image)
                                 imgcopy.bytesPerLine()));
 
   qDebug() << "finished image processing...";
+  Mat result = m_document.getResult();
+  return QImage((uchar*) result.data, result.cols, result.rows, result.step, QImage::Format_RGB888);
 }
 
 //std::vector<cv::Point> ImageProcessing::getContour()

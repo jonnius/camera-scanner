@@ -23,7 +23,7 @@ public:
     * getQuadrilateral() and getResult() to access 
     * (intermediate) results.
     */
-  Q_INVOKABLE void processImage(const QImage & image);
+  Q_INVOKABLE QImage processImage(const QImage & image);
   /**
     * Get contour as a result of processImage(). The contour
     * is a polygone containing a list of points along the 
