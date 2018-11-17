@@ -1,10 +1,10 @@
-#ifndef CDOCUMENT_H
-#define CDOCUMENT_H
+#ifndef Document_H
+#define Document_H
 
-#include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 namespace DocumentScanner
 {
@@ -61,24 +61,24 @@ private:
 };
 
 /**
-  * CDocument represents one document and its detection inside
+  * Document represents one document and its detection inside
   * an image. It is initialized by specifying an image and will
   * detect and cut out the document, rectify and enhance it. 
   */
-class CDocument
+class Document
 {
 public:
-  CDocument()
+  Document() : m_success(false)
   {
     /* empty */
   }
 
-  CDocument(const cv::Mat & image)
+  Document(const cv::Mat & image) : m_success(false), m_original(image)
   {
-  	detectDocument(image);
+  	/* empty */
   }
 
-  void detectDocument(const cv::Mat & inputRgba);
+  void detectDocument();
 
   cv::Mat getProcessed() {
       return m_processed;
@@ -105,9 +105,19 @@ public:
     return m_quadrilateral.getPoints();
   }
 
-  cv::Mat getResult()
+  cv::Mat getDocImage()
   {
     return m_processed;
+  }
+
+  cv::Mat getRawImage()
+  {
+    return m_original;
+  }
+  
+  bool docDetected()
+  {
+	  return m_success;
   }
 
 private:
@@ -116,6 +126,7 @@ private:
   CQuadrilateral m_quadrilateral;
   std::vector<cv::Point> m_previewPoints; // TODO Sinn prüfen
   cv::Size m_previewSize;
+  bool m_success;
 };
 }
 

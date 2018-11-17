@@ -1,65 +1,70 @@
 #include <QDebug>
 #include <QtGui/QImage>
-#include <QStandardPaths>
 #include <QString>
-
-#include "ImageProcessing.h"
-
-#include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
-//#include "highgui.h"
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 
-using namespace cv;
+#include <QFileInfo>
+#include <QDir>
+
+#include "ImageProcessing.h"
+#include "Document.h"
+
+using namespace DocumentScanner;
 
 ImageProcessing::ImageProcessing() {
   /* empty */
+  //TODO define default params
+  //TODO load params from config
 }
-
-QString ImageProcessing::processImage(const QString & imageURL)
+void ImageProcessing::restoreCache()
 {
-  //Let's get the name of the picture
-  QString fileName = imageURL.right(imageURL.size() - (imageURL.lastIndexOf('/') + 1));
-  //~ //Set the destination path
-  QString destfile = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/" + fileName;
-  //~ qDebug() << "image file path: " << destfile;
-  QString imagePath = imageURL;
-  if (imagePath.startsWith("file://"))
-  {
-	  imagePath = imagePath.right(imagePath.size()-7);
-  }
-  qDebug() << "image file name: " << imagePath;
-  
-  qDebug() << "starting to process image...";
-  Mat img = imread(imagePath.toStdString());
-  m_document.detectDocument(img);
-
-  qDebug() << "finished image processing...";
-  Mat result = m_document.getResult();
-  imwrite(destfile.toStdString(), result);
-  //~ QImage processedImage = QImage((uchar*) result.data, result.cols, result.rows, result.step, QImage::Format_RGB888);
-  //~ processedImage.save(QString::fromStdString(destfile));
-  qDebug() << "Stored at " << destfile;
-
-  return destfile;
+	for (QString id : m_store.restoreCache())
+		emit imageAdded(id);
 }
 
-//std::vector<cv::Point> ImageProcessing::getContour()
-//{
-//  return m_document.getContour();
-//}
+void ImageProcessing::addImage(const QString &imageURL)
+{
+	QString id = m_store.addDocument(imageURL);
+	m_store.cacheDocument(id);
+	emit imageAdded(id);
+	processImage(id);
+}
 
-//std::vector<cv::Point> ImageProcessing::getQuadrilateral()
-//{
-//  return m_document.getQuadrilateral();
-//}
+void ImageProcessing::processImage(const QString &id)
+{
+	Document &d = m_store.accessDocument(id);
+	d.detectDocument();
+	emit imageProcessed(id, d.docDetected()); 
+}
 
-//cv::Mat ImageProcessing::getResult()
-//{
-//  return m_document.getResult();
-//}
+void ImageProcessing::removeImage(const QString &id)
+{
+	m_store.removeDocument(id);
+	emit imageRemoved(id);
+}
+
+void ImageProcessing::removeAll()
+{
+	for (QString id : m_store.getIDs())
+		removeImage(id);
+}
+
+bool ImageProcessing::isDocument(const QString &id)
+{
+	return m_store.accessDocument(id).docDetected();
+}
+
+void ImageProcessing::setParam(const QString &key, const QString &value)
+{
+	qDebug() << "ImageProcessing::setParam() not yet implemented";
+//TODO
+}
+
+QString ImageProcessing::getParam(const QString &key)
+{
+	qDebug() << "ImageProcessing::getParam() not yet implemented";
+//TODO
+}

@@ -1,9 +1,4 @@
-#include "CDocument.h"
-
-#include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include "Document.h"
 
 #include <iostream>
 #include <vector>
@@ -313,17 +308,16 @@ void enhanceDocument(Mat src)
 	}
 }
 
-void CDocument::detectDocument(const cv::Mat & inputRgba)
+void Document::detectDocument()
 {
+	m_success = false;
 	// TODO These have been members of the handler class
 //    vector<Point> mPreviewPoints;
 //    Size mPreviewSize;
 
-  m_original = inputRgba;
+	vector<Contour> contours = findContours(m_original);
 
-	vector<Contour> contours = findContours(inputRgba);
-
-	CQuadrilateral quad = findQuadrilateral(contours, inputRgba.size());
+	CQuadrilateral quad = findQuadrilateral(contours, m_original.size());
 
 	Mat doc;
 
@@ -336,14 +330,15 @@ void CDocument::detectDocument(const cv::Mat & inputRgba)
 //		m_previewPoints = mPreviewPoints;
 //		m_previewSize = mPreviewSize;
 
-		doc = fourPointTransform(inputRgba, quad.getPoints());
+		doc = fourPointTransform(m_original, quad.getPoints());
+		m_success = true;
 
 	} else {
 		cout << "WARNING: No document detected." << endl;
-		doc = Mat(inputRgba.size(), CV_8UC4);
-		inputRgba.copyTo(doc);
+		doc = Mat(m_original.size(), CV_8UC4);
+		m_original.copyTo(doc);
 	}
 
 	enhanceDocument(doc);
-  m_processed = doc;
+	m_processed = doc;
 }
