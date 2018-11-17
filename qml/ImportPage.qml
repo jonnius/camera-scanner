@@ -18,6 +18,8 @@ import QtQuick 2.6
 import Ubuntu.Components 1.3
 import Ubuntu.Content 1.3
 
+import ImageProcessing 1.0
+
 Page {
     id: picker
 	property var activeTransfer
@@ -56,7 +58,12 @@ Page {
                     
                     for (var i=0; i<picker.activeTransfer.items.length; i++) {
                         var item = picker.activeTransfer.items[i];
-                        mainPage.imageModel.append({origimg: String(item.url), imgout: String(item.url)}); //scanImage.elaborate(String(item.url))})
+
+                        //Let's make both unprocessed images for testing purposes
+                        mainPage.imageModel.append({origimg: String(item.url), imgout: String(item.url)});
+
+                        //Add current image to being processed
+                        ImageProcessing.addImage(item.url);
                     }
 
                     picker.activeTransfer = null
