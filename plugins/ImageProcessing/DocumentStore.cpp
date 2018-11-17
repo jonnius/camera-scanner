@@ -146,7 +146,10 @@ void DocumentStore::removeDocument(const QString &id)
 {
 	if (m_documents.count(id))
     {
-		//TODO remove document from cache
+		if (!QDir(getDocumentDir(id)).removeRecursively())
+		{
+			qDebug() << "Zombie alert! Failed to remove document dir from cache: " << id;	
+		}
 		m_documents.erase(id);
 	}
 	else
