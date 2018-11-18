@@ -55,12 +55,12 @@ QStringList getIDsFromCache()
 
 QString getRawImagePath(const QString &id)
 {
-	QFileInfo(getDocumentDir(id), "raw.jpg").absolutePath();
+	return QFileInfo(getDocumentDir(id), "raw.jpg").absolutePath();
 }
 
 QString getDocImagePath(const QString &id)
 {
-	QFileInfo(getDocumentDir(id), "doc.jpg").absolutePath();
+	return QFileInfo(getDocumentDir(id), "doc.jpg").absolutePath();
 }
 
 QString URL2Path(const QString &URL)
