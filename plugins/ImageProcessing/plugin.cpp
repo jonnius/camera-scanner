@@ -4,6 +4,8 @@
 #include "plugin.h"
 #include "ImageProcessing.h"
 
+using namespace DocumentScanner;
+
 void ImageProcessingPlugin::registerTypes(const char *uri)
 {
     //@uri ImageProcessing
@@ -15,3 +17,4 @@ void ImageProcessingPlugin::initializeEngine(QQmlEngine *engine, const char *uri
     engine->addImageProvider(QLatin1String("documents"), &m_store);
 }
 
+DocumentStore ImageProcessingPlugin::m_store = DocumentStore();
