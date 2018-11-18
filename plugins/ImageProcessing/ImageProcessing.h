@@ -14,7 +14,7 @@ class ImageProcessing: public QObject
   Q_OBJECT
 
 public:
-  ImageProcessing();
+  ImageProcessing(DocumentScanner::DocumentStore &d);
   ~ImageProcessing() = default;
 
   /** Load cached images from disk and add them */
@@ -42,7 +42,7 @@ signals:
   void imageRemoved(const QString &id);
 
 private:
-  DocumentScanner::DocumentStore m_store;
+  DocumentScanner::DocumentStore &m_store;
   std::map<QString,QVariant> m_params;
 };
 

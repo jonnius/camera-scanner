@@ -14,7 +14,8 @@
 
 using namespace DocumentScanner;
 
-ImageProcessing::ImageProcessing() {
+ImageProcessing::ImageProcessing(DocumentStore &d) : m_store(d)
+{
   /* empty */
   //TODO define default params
   //TODO load params from config

@@ -84,32 +84,6 @@ Document createDocument(const QString &imageURL)
   return Document(img);
 }
 
-QImage DocumentStore::requestImage(const QString &id, QSize *size, 
-								const QSize &requestedSize)
-{
-	QImage img;
-	
-    if (m_documents.count(id))
-    {
-		img = convertMat2QImage(m_documents.at(id).getDocImage());
-		QSize sizeOrig = img.size();
-	
-		if (size)
-		  *size = sizeOrig;
-		
-		QSize newSize(requestedSize.width() > 0 ? requestedSize.width() : sizeOrig.width(),
-					  requestedSize.height() > 0 ? requestedSize.height() : sizeOrig.height());
-		img = img.scaled(newSize, Qt::KeepAspectRatio); 
-	}
-	else
-    {
-		qDebug() << "Tried to access document with invalid id " << id;	
-		if (size)
-			*size = QSize(0, 0);
-	}	
-	return img;
-}
-
 QString DocumentStore::addDocument(const QString &url)
 {
 	Document d = createDocument(url);
@@ -186,4 +160,32 @@ QStringList DocumentStore::restoreCache()
 	for (QString id:ids)
 		addDocument(getRawImagePath(id));
 	return ids;
+}
+
+
+QImage DocumentStore::requestImage(const QString &id, QSize *size, 
+								   const QSize &requestedSize)
+{
+	QImage img;
+	qDebug() << "image requested with id " << id;	
+	
+    if (m_documents.count(id))
+    {
+		img = convertMat2QImage(m_documents.at(id).getDocImage());
+		QSize sizeOrig = img.size();
+	
+		if (size)
+		  *size = sizeOrig;
+		
+		QSize newSize(requestedSize.width() > 0 ? requestedSize.width() : sizeOrig.width(),
+					  requestedSize.height() > 0 ? requestedSize.height() : sizeOrig.height());
+		img = img.scaled(newSize, Qt::KeepAspectRatio); 
+	}
+	else
+    {
+		qDebug() << "Tried to access document with invalid id " << id;	
+		if (size)
+			*size = QSize(0, 0);
+	}	
+	return img;
 }
