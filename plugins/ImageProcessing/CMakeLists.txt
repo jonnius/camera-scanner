@@ -10,7 +10,8 @@ set(
     SRC
     plugin.cpp
     ImageProcessing.cpp
-    CDocument.cpp
+    Document.cpp
+    DocumentStore.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

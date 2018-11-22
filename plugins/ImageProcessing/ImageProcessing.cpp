@@ -1,52 +1,71 @@
 #include <QDebug>
 #include <QtGui/QImage>
-
-#include "ImageProcessing.h"
-
-#include "opencv2/opencv.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
-//#include "highgui.h"
+#include <QString>
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 
-using namespace cv;
+#include <QFileInfo>
+#include <QDir>
 
-ImageProcessing::ImageProcessing() {
+#include "ImageProcessing.h"
+#include "Document.h"
+
+using namespace DocumentScanner;
+
+ImageProcessing::ImageProcessing(DocumentStore &d) : m_store(d)
+{
   /* empty */
+  //TODO define default params
+  //TODO load params from config
 }
-
-void ImageProcessing::speak() {
-  qDebug() << "hello world!";
-}
-
-void ImageProcessing::processImage(const QImage & image)
+void ImageProcessing::restoreCache()
 {
-  qDebug() << "starting to process image...";
-  QImage imgcopy = image.copy();
-  m_document.detectDocument(Mat(imgcopy.height(),
-                                imgcopy.width(),
-                                CV_8UC3,
-                                imgcopy.bits(),
-                                imgcopy.bytesPerLine()));
-
-  qDebug() << "finished image processing...";
+	for (QString id : m_store.restoreCache())
+		emit imageAdded(id);
 }
 
-std::vector<cv::Point> ImageProcessing::getContour()
+void ImageProcessing::addImage(const QString &imageURL)
 {
-  return m_document.getContour();
+	QString id = m_store.addDocument(imageURL);
+	m_store.cacheDocument(id);
+	emit imageAdded(id);
+	processImage(id);
 }
 
-std::vector<cv::Point> ImageProcessing::getQuadrilateral()
+void ImageProcessing::processImage(const QString &id)
 {
-  return m_document.getQuadrilateral();
+	Document &d = m_store.accessDocument(id);
+	d.detectDocument();
+	emit imageProcessed(id, d.docDetected()); 
 }
 
-cv::Mat ImageProcessing::getResult()
+void ImageProcessing::removeImage(const QString &id)
 {
-  return m_document.getResult();
+	m_store.removeDocument(id);
+	emit imageRemoved(id);
+}
+
+void ImageProcessing::removeAll()
+{
+	for (QString id : m_store.getIDs())
+		removeImage(id);
+}
+
+bool ImageProcessing::isDocument(const QString &id)
+{
+	return m_store.accessDocument(id).docDetected();
+}
+
+void ImageProcessing::setParam(const QString &key, const QString &value)
+{
+	qDebug() << "ImageProcessing::setParam() not yet implemented";
+//TODO
+}
+
+QString ImageProcessing::getParam(const QString &key)
+{
+	qDebug() << "ImageProcessing::getParam() not yet implemented";
+//TODO
 }
