@@ -38,6 +38,7 @@ void ImageProcessing::processImage(const QString &id)
 {
 	Document &d = m_store.accessDocument(id);
 	d.detectDocument();
+	m_store.cacheDocument(id);
 	emit imageProcessed(id, d.docDetected()); 
 }
 
