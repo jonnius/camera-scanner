@@ -73,7 +73,9 @@ public:
     /* empty */
   }
 
-  Document(const cv::Mat & image) : m_success(false), m_original(image)
+  Document(const cv::Mat & image) : m_success(false),
+                                    m_original(image),
+                                    m_processed(image)
   {
   	/* empty */
   }

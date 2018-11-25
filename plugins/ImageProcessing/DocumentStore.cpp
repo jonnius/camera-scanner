@@ -23,27 +23,29 @@ QString getTimeStampNow()
 
 QString joinPath(QString d1, QString d2)
 {
-	return QFileInfo(QDir(d1), d2).path();
+	return QFileInfo(QDir(d1), d2).absoluteFilePath();
 }
 
 QString getDocumentBaseDir()
 {
-	QDir doc(joinPath(QStandardPaths::writableLocation(QStandardPaths::CacheLocation), "docs"));
+	QString path = joinPath(QStandardPaths::writableLocation(QStandardPaths::CacheLocation), "docs");
+	QDir doc(path);
 	if (!doc.exists() && !doc.mkpath("."))
 	{
-		qDebug() << "Failed to create document base directory " << doc.absolutePath();
+		qDebug() << "Failed to create document base directory " << path;
 	}
-	return doc.absolutePath();
+	return path;
 }
 
 QString getDocumentDir(const QString &id)
 {
-	QDir doc(joinPath(getDocumentBaseDir(), id));
+	QString path = joinPath(getDocumentBaseDir(), id);
+	QDir doc(path);
 	if (!doc.exists() && !doc.mkpath("."))
 	{
-		qDebug() << "Failed to create document directory " << doc.absolutePath();
+		qDebug() << "Failed to create document directory " << path;
 	}
-	return doc.absolutePath();
+	return path;
 }
 
 QStringList getIDsFromCache()
@@ -55,12 +57,12 @@ QStringList getIDsFromCache()
 
 QString getRawImagePath(const QString &id)
 {
-	return QFileInfo(getDocumentDir(id), "raw.jpg").absolutePath();
+	return joinPath(getDocumentDir(id), "raw.jpg");
 }
 
 QString getDocImagePath(const QString &id)
 {
-	return QFileInfo(getDocumentDir(id), "doc.jpg").absolutePath();
+	return joinPath(getDocumentDir(id), "doc.jpg");
 }
 
 QString URL2Path(const QString &URL)
@@ -106,8 +108,14 @@ void DocumentStore::cacheDocument(const QString &id)
 	if (m_documents.count(id))
     {
 		Document d = m_documents.at(id);
-		imwrite(getRawImagePath(id).toStdString(), d.getRawImage());
-		imwrite(getDocImagePath(id).toStdString(), d.getDocImage());
+		QString rawPath = getRawImagePath(id);
+		QString docPath = getDocImagePath(id);
+		QFile(rawPath).remove();
+		QFile(docPath).remove();
+
+		imwrite(rawPath.toStdString(), d.getRawImage());
+		if (d.docDetected())
+			imwrite(docPath.toStdString(), d.getDocImage());
 	}
 	else
     {
