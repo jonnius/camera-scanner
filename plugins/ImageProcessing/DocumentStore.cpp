@@ -51,7 +51,7 @@ QString getDocumentDir(const QString &id)
 QStringList getIDsFromCache()
 {
 	QDir base(getDocumentBaseDir());
-	base.setFilter(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoDotDot);
+	base.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
 	return base.entryList();
 }
 
@@ -86,10 +86,11 @@ Document createDocument(const QString &imageURL)
   return Document(img);
 }
 
-QString DocumentStore::addDocument(const QString &url)
+QString DocumentStore::addDocument(const QString &url, QString id)
 {
 	Document d = createDocument(url);
-	QString id = getTimeStampNow();
+	if (id.isEmpty())
+		id = getTimeStampNow();
 	
 	if (!m_documents.count(id))
     {
@@ -110,10 +111,10 @@ void DocumentStore::cacheDocument(const QString &id)
 		Document d = m_documents.at(id);
 		QString rawPath = getRawImagePath(id);
 		QString docPath = getDocImagePath(id);
-		QFile(rawPath).remove();
 		QFile(docPath).remove();
 
-		imwrite(rawPath.toStdString(), d.getRawImage());
+		if (!QFile(rawPath).exists())
+			imwrite(rawPath.toStdString(), d.getRawImage());
 		if (d.docDetected())
 			imwrite(docPath.toStdString(), d.getDocImage());
 	}
@@ -164,9 +165,10 @@ QStringList DocumentStore::getIDs()
 
 QStringList DocumentStore::restoreCache()
 {
+	qDebug() << "Restoring cache";
 	QStringList ids = getIDsFromCache();
 	for (QString id:ids)
-		addDocument(getRawImagePath(id));
+		addDocument(getRawImagePath(id), id);
 	return ids;
 }
 
