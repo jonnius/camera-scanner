@@ -31,5 +31,5 @@ MainView {
         anchors.fill: parent
     }
 
-//    Component.onCompleted: ImageProcessing.speak()
+	Component.onCompleted: ImageProcessing.restoreCache()
 }
