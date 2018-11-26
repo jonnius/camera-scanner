@@ -10,7 +10,6 @@ using namespace cv;
 
 QImage convertMat2QImage(const Mat &img)
 {
-	// TODO do we ensure the OpenCV image type?
 	return QImage((uchar*) img.data, img.cols, img.rows, 
 						img.step, QImage::Format_RGB888);
 }
@@ -78,6 +77,7 @@ Document createDocument(const QString &imageURL)
 {
   QString imagePath = URL2Path(imageURL);
 
+  // Image is converted to 8bit RGB by default
   Mat img = imread(imagePath.toStdString());
   if (!img.data)
   {
@@ -113,10 +113,15 @@ void DocumentStore::cacheDocument(const QString &id)
 		QString docPath = getDocImagePath(id);
 		QFile(docPath).remove();
 
-		if (!QFile(rawPath).exists())
-			imwrite(rawPath.toStdString(), d.getRawImage());
-		if (d.docDetected())
-			imwrite(docPath.toStdString(), d.getDocImage());
+		try {
+			if (!QFile(rawPath).exists())
+				imwrite(rawPath.toStdString(), d.getRawImage());
+			if (d.docDetected())
+				imwrite(docPath.toStdString(), d.getDocImage());
+		}
+		catch (cv::Exception& e) {
+			qDebug() << "Exception caching image with id " << id << "\n" << e.what();
+		}
 	}
 	else
     {
