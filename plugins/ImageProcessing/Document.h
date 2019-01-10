@@ -79,6 +79,12 @@ public:
     {
         /* empty */
     }
+    
+    void restoreDocument(const cv::Mat & doc)
+    {
+		m_processed = doc;
+		m_success = true;
+	}
 
     void detectDocument();
 

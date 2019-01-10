@@ -4,6 +4,8 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QPdfWriter>
+#include <QPainter>
 
 using namespace DocumentScanner;
 using namespace cv;
@@ -73,7 +75,7 @@ QString URL2Path(const QString &URL)
     return URL;
 }
 
-Document createDocument(const QString &imageURL)
+Document createDocument(const QString &imageURL, const QString &docURL = "")
 {
     QString imagePath = URL2Path(imageURL);
 
@@ -81,16 +83,41 @@ Document createDocument(const QString &imageURL)
     Mat img = imread(imagePath.toStdString());
     if (!img.data)
     {
-        qDebug() << "image does not exist or is invalid: " << imagePath;
+        qDebug() << "raw image does not exist or is invalid: " << imagePath;
     }
-    return Document(img);
+    
+    Document d(img);
+    
+    if (!docURL.isEmpty())
+    {
+		// Restore processed document
+		// TODO check if exists
+		QString docPath = URL2Path(docURL);
+		
+		Mat doc = imread(docPath.toStdString());
+		if (!doc.data)
+		{
+			qDebug() << "doc image does not exist or is invalid: " << docPath;
+		}
+		else
+		{
+			d.restoreDocument(doc);
+		}
+	}
+    
+    return d;
 }
 
 QString DocumentStore::addDocument(const QString &url, QString id)
 {
-    Document d = createDocument(url);
+	QString docPath = "";
+	
     if (id.isEmpty())
         id = getTimeStampNow();
+	else
+		docPath = getDocImagePath(id);
+
+	Document d = createDocument(url, docPath);
 
     if (!m_documents.count(id))
     {
@@ -205,4 +232,37 @@ QImage DocumentStore::requestImage(const QString &id, QSize *size,
             *size = QSize(0, 0);
     }
     return img;
+}
+
+QString DocumentStore::exportPdf(const QStringList &ids)
+{
+    QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/test.pdf";
+    qDebug() << "Writing pdf to " << path;
+    
+    QPdfWriter pdfwriter(path);
+    QPainter painter(&pdfwriter);
+    pdfwriter.setPageSize(QPagedPaintDevice::A4);
+
+	bool firstPage = true;
+    for (QString id : ids)
+    {
+		Document d = m_documents.at(id);
+        if (!d.docDetected())
+			continue;
+		
+		if (firstPage)
+			firstPage = false;
+		else
+            pdfwriter.newPage();
+
+        //~ painter.drawPixmap(QRect(0,0,pdfwriter.logicalDpiX()*8.3,pdfwriter.logicalDpiY()*11.7),
+                           //~ QPixmap((imgurl.at(var)).toString()));
+        painter.drawImage(0, 0, convertMat2QImage(d.getDocImage()));
+    }
+    
+    if (firstPage)
+		qDebug() << "Saved an empty PDF";
+
+    painter.end();
+    return path;
 }

@@ -25,6 +25,7 @@ public:
     Document& accessDocument(const QString &id);
     QStringList getIDs();
     QStringList restoreCache();
+    QString exportPdf(const QStringList &ids);
 
 private:
     std::map<QString,Document> m_documents;

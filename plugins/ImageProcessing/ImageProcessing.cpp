@@ -24,6 +24,7 @@ void ImageProcessing::restoreCache()
 {
     for (QString id : m_store.restoreCache())
         emit imageAdded(id);
+    exportAllAsPdf();
 }
 
 void ImageProcessing::addImage(const QString &imageURL)
@@ -52,6 +53,17 @@ void ImageProcessing::removeAll()
 {
     for (QString id : m_store.getIDs())
         removeImage(id);
+}
+
+QString ImageProcessing::exportAsPdf(const QString &id)
+{
+    QStringList ids = { id };
+    return m_store.exportPdf(ids);
+}
+
+QString ImageProcessing::exportAllAsPdf()
+{
+	return m_store.exportPdf(m_store.getIDs());
 }
 
 bool ImageProcessing::isDocument(const QString &id)
