@@ -2,12 +2,42 @@ import QtQuick 2.6
 import Ubuntu.Components 1.3
 import QtQml.Models 2.1
 import QtGraphicalEffects 1.0
+import ImageProcessing 1.0
 
 Page {
     property alias imageModel: imageModel
 
     header: CommonHeader {
         id: mainHeader
+    }
+
+    function imageAdded ( id ) {
+      console.log("imageAdded() mit " + id +" aufgerufen")
+        imageModel.append (
+          {
+            imageID: id,
+            imgout: "image://documents/"+id
+          }
+        )
+    }
+
+    function imageProcessed ( id, success ) {
+        console.log("onImageProcessed() mit " + id +" aufgerufen")
+        for (var i = 0; i < imageModel.count; i++) {
+          var tempImage = imageModel.get(i)
+          if (tempImage.imageID === id)
+          {
+            console.log("Image " + id + " found at " + i)
+            tempImage.imgout = "image://documents/"+id
+            imageModel.set(i, tempImage)
+          }
+        }
+    }
+
+    Connections {
+      target: ImageProcessing
+      onImageAdded: imageAdded (id)
+      onImageProcessed: imageProcessed (id, success)
     }
 
     ListModel {
@@ -23,6 +53,7 @@ Page {
         delegate: MouseArea {
             id: delegateRoot
             property int visualIndex: DelegateModel.itemsIndex
+            property var imageID: model.imageID
             width: gridview.cellWidth
             height: gridview.cellHeight
             drag.smoothed: true

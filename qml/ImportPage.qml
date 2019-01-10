@@ -27,7 +27,7 @@ Page {
 	property var url
 	property var handler
 	property var contentType
-	
+
     signal cancel()
     signal imported(string fileUrl)
 
@@ -38,7 +38,7 @@ Page {
 
     ContentPeerPicker {
 
-        anchors { 
+        anchors {
             fill: parent
             topMargin: importHeader.height
         }
@@ -55,12 +55,9 @@ Page {
                 if (picker.activeTransfer.state === ContentTransfer.Charged) {
 					console.log("Charged");
 					console.log(picker.activeTransfer.items[0].url)
-                    
+
                     for (var i=0; i<picker.activeTransfer.items.length; i++) {
                         var item = picker.activeTransfer.items[i];
-
-                        //Let's make both unprocessed images for testing purposes
-                        mainPage.imageModel.append({origimg: String(item.url), imgout: String(item.url)});
 
                         //Add current image to being processed
                         ImageProcessing.addImage(item.url);
