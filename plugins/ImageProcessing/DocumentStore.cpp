@@ -10,10 +10,12 @@
 using namespace DocumentScanner;
 using namespace cv;
 
-QImage convertMat2QImage(const Mat &img)
+QImage convertMat2QImage(Mat img)
 {
-    return QImage((uchar*) img.data, img.cols, img.rows,
-                  img.step, QImage::Format_RGB888);
+	Mat rgb(img.size(), CV_8UC3);
+	cvtColor(img, rgb, COLOR_BGR2RGB);
+    return QImage((uchar*) rgb.data, rgb.cols, rgb.rows,
+                  rgb.step, QImage::Format_RGB888).copy();
 }
 
 QString getTimeStampNow()
