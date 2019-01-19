@@ -26,7 +26,7 @@ Page {
         contentItem: Column {
             width: infoPage.width
 
-            Image {
+            Icon {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.topMargin: parent.width / 4
                 width: parent.width / 2
