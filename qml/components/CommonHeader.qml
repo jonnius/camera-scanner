@@ -18,10 +18,10 @@ PageHeader {
 				shortcut: "Ctrl+i"
 				text: i18n.tr("Information")
 				onTriggered: {
-					mainPageStack.push(Qt.resolvedUrl("../about.qml"));
+					pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
 				}
 			},
-			
+
 			Action {
 				iconName: "add"
 				shortcut: "Ctrl+a"

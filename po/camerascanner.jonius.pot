@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: camerascanner.jonius\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-25 15:02+0000\n"
+"POT-Creation-Date: 2019-01-19 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/ImportPage.qml:36
-msgid "Import Image"
+#: ../qml/InfoPage.qml:12
+msgid "Info about Camera Scanner"
+msgstr ""
+
+#: ../qml/InfoPage.qml:38
+msgid "Report a bug"
+msgstr ""
+
+#: ../qml/InfoPage.qml:44
+msgid "Contributors"
+msgstr ""
+
+#: ../qml/InfoPage.qml:50
+msgid "Source code"
+msgstr ""
+
+#: ../qml/InfoPage.qml:56
+msgid "License"
+msgstr ""
+
+#: ../qml/components/EmptyDocument.qml:32
+msgid "Empty Project"
+msgstr ""
+
+#: ../qml/components/EmptyDocument.qml:33
+msgid "Please, tap on the + icon to add images to the project"
 msgstr ""
 
 #: ../qml/components/CommonHeader.qml:6 camerascanner.desktop.in.h:1
@@ -37,10 +61,6 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: ../qml/components/EmptyDocument.qml:32
-msgid "Empty Project"
-msgstr ""
-
-#: ../qml/components/EmptyDocument.qml:33
-msgid "Please, tap on the + icon to add images to the project"
+#: ../qml/ImportPage.qml:36
+msgid "Import Image"
 msgstr ""
