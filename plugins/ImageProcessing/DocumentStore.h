@@ -26,6 +26,7 @@ public:
     QStringList getIDs();
     QStringList restoreCache();
     QString exportPdf(const QStringList &ids);
+    QString getImageURL(const QString &id);
 
 private:
     std::map<QString,Document> m_documents;

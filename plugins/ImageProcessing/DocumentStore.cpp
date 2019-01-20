@@ -12,8 +12,8 @@ using namespace cv;
 
 QImage convertMat2QImage(Mat img)
 {
-	Mat rgb(img.size(), CV_8UC3);
-	cvtColor(img, rgb, COLOR_BGR2RGB);
+    Mat rgb(img.size(), CV_8UC3);
+    cvtColor(img, rgb, COLOR_BGR2RGB);
     return QImage((uchar*) rgb.data, rgb.cols, rgb.rows,
                   rgb.step, QImage::Format_RGB888).copy();
 }
@@ -77,6 +77,11 @@ QString URL2Path(const QString &URL)
     return URL;
 }
 
+QString path2URL(const QString &path)
+{
+    return "file://"+path;
+}
+
 Document createDocument(const QString &imageURL, const QString &docURL = "")
 {
     QString imagePath = URL2Path(imageURL);
@@ -87,39 +92,39 @@ Document createDocument(const QString &imageURL, const QString &docURL = "")
     {
         qDebug() << "raw image does not exist or is invalid: " << imagePath;
     }
-    
+
     Document d(img);
-    
+
     if (!docURL.isEmpty())
     {
-		// Restore processed document
-		// TODO check if exists
-		QString docPath = URL2Path(docURL);
-		
-		Mat doc = imread(docPath.toStdString());
-		if (!doc.data)
-		{
-			qDebug() << "doc image does not exist or is invalid: " << docPath;
-		}
-		else
-		{
-			d.restoreDocument(doc);
-		}
-	}
-    
+        // Restore processed document
+        // TODO check if exists
+        QString docPath = URL2Path(docURL);
+
+        Mat doc = imread(docPath.toStdString());
+        if (!doc.data)
+        {
+            qDebug() << "doc image does not exist or is invalid: " << docPath;
+        }
+        else
+        {
+            d.restoreDocument(doc);
+        }
+    }
+
     return d;
 }
 
 QString DocumentStore::addDocument(const QString &url, QString id)
 {
-	QString docPath = "";
-	
+    QString docPath = "";
+
     if (id.isEmpty())
         id = getTimeStampNow();
-	else
-		docPath = getDocImagePath(id);
+    else
+        docPath = getDocImagePath(id);
 
-	Document d = createDocument(url, docPath);
+    Document d = createDocument(url, docPath);
 
     if (!m_documents.count(id))
     {
@@ -240,31 +245,47 @@ QString DocumentStore::exportPdf(const QStringList &ids)
 {
     QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/test.pdf";
     qDebug() << "Writing pdf to " << path;
-    
+
     QPdfWriter pdfwriter(path);
     QPainter painter(&pdfwriter);
     pdfwriter.setPageSize(QPagedPaintDevice::A4);
 
-	bool firstPage = true;
+    bool firstPage = true;
     for (QString id : ids)
     {
-		Document d = m_documents.at(id);
+        Document d = m_documents.at(id);
         if (!d.docDetected())
-			continue;
-		
-		if (firstPage)
-			firstPage = false;
-		else
+            continue;
+
+        if (firstPage)
+            firstPage = false;
+        else
             pdfwriter.newPage();
 
         //~ painter.drawPixmap(QRect(0,0,pdfwriter.logicalDpiX()*8.3,pdfwriter.logicalDpiY()*11.7),
-                           //~ QPixmap((imgurl.at(var)).toString()));
+        //~ QPixmap((imgurl.at(var)).toString()));
         painter.drawImage(0, 0, convertMat2QImage(d.getDocImage()));
     }
-    
+
     if (firstPage)
-		qDebug() << "Saved an empty PDF";
+        qDebug() << "Saved an empty PDF";
 
     painter.end();
     return path;
+}
+
+QString DocumentStore::getImageURL(const QString &id)
+{
+    if (m_documents.count(id))
+    {
+        Document d = m_documents.at(id);
+        QString imagePath = d.docDetected() ? getDocImagePath(id)
+                            : getRawImagePath(id);
+        return path2URL(imagePath);
+    }
+    else
+    {
+        qDebug() << "Tried to access document with invalid id " << id;
+        return "";
+    }
 }

@@ -63,7 +63,23 @@ QString ImageProcessing::exportAsPdf(const QString &id)
 
 QString ImageProcessing::exportAllAsPdf()
 {
-	return m_store.exportPdf(m_store.getIDs());
+    return m_store.exportPdf(m_store.getIDs());
+}
+
+QString ImageProcessing::exportAsImage(const QString &id)
+{
+    return m_store.getImageURL(id);
+}
+
+QStringList ImageProcessing::exportAllAsImages()
+{
+    QStringList ids = m_store.getIDs();
+    QStringList urls;
+    for (QString id : ids)
+    {
+        urls << m_store.getImageURL(id);
+    }
+    return urls;
 }
 
 bool ImageProcessing::isDocument(const QString &id)

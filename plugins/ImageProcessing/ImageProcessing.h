@@ -31,6 +31,10 @@ public:
     Q_INVOKABLE QString exportAsPdf(const QString &id);
     /** Export all images as PDF and return URL to PDF file */
     Q_INVOKABLE QString exportAllAsPdf();
+    /** Export one image as PDF and return URL to PDF file */
+    Q_INVOKABLE QString exportAsImage(const QString &id);
+    /** Export all images as PDF and return URL to PDF file */
+    Q_INVOKABLE QStringList exportAllAsImages();
 
     /** Return true if a document has been found in the specified image */
     Q_INVOKABLE bool isDocument(const QString &id);
