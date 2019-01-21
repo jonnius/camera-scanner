@@ -169,9 +169,9 @@ Page {
             }
 
             onClicked: {
-                var url = model.imgout
+                var url = ImageProcessing.exportAsPdf( model.imageID )
                 console.log("Share:",url)
-                var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Pictures})
+                var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
                 sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
             }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: camerascanner.jonius\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-19 08:52+0000\n"
+"POT-Creation-Date: 2019-01-21 11:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,19 +45,19 @@ msgstr ""
 msgid "Please, tap on the + icon to add images to the project"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:6 camerascanner.desktop.in.h:1
+#: ../qml/components/CommonHeader.qml:8 camerascanner.desktop.in.h:1
 msgid "Camera Scanner"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:19
+#: ../qml/components/CommonHeader.qml:21
 msgid "Information"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:28
+#: ../qml/components/CommonHeader.qml:30
 msgid "Add"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:37
+#: ../qml/components/CommonHeader.qml:39
 msgid "Save"
 msgstr ""
 
