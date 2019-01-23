@@ -1,6 +1,8 @@
 import QtQuick 2.6
 import Ubuntu.Components 1.3
 import Ubuntu.Content 1.3
+import ImageProcessing 1.0
+import Ubuntu.Components.Popups 1.3
 
 PageHeader {
     title: i18n.tr('Camera Scanner')
@@ -18,10 +20,10 @@ PageHeader {
 				shortcut: "Ctrl+i"
 				text: i18n.tr("Information")
 				onTriggered: {
-					mainPageStack.push(Qt.resolvedUrl("../about.qml"));
+					pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
 				}
 			},
-			
+
 			Action {
 				iconName: "add"
 				shortcut: "Ctrl+a"
@@ -35,9 +37,12 @@ PageHeader {
 				iconName: "save"
 				shortcut: "Ctrl+s"
 				text: i18n.tr("Save")
-				onTriggered: {
-					mainPageStack.push(Qt.resolvedUrl("../about.qml"));
-				}
+                onTriggered: {
+                    var url = ImageProcessing.exportAllAsPdf()
+                    console.log("Share:",url)
+                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
+                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": "export"}))
+                }
 			}
 		]
 	}

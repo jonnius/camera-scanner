@@ -3,9 +3,14 @@ import Ubuntu.Components 1.3
 import QtQml.Models 2.1
 import QtGraphicalEffects 1.0
 import ImageProcessing 1.0
+import Ubuntu.Content 1.3
+import Ubuntu.Components.Popups 1.3
+import "../components"
 
 Page {
+    id: mainPage
     property alias imageModel: imageModel
+    signal exportCompleted ()
 
     header: CommonHeader {
         id: mainHeader
@@ -44,6 +49,18 @@ Page {
         id: imageModel
         //ListElement {imgout: "calendaris.png"}
         //ListElement {imgout: "/home/phablet/.cache/doc-scanner.dslul/1479221316289.jpg_out.png"}
+    }
+
+    Component {
+        id: shareDialog
+        ContentShareDialog {
+            Component.onDestruction: exportCompleted()
+        }
+    }
+
+    Component {
+        id: contentItemComponent
+        ContentItem { }
     }
 
     DelegateModel {
@@ -149,6 +166,13 @@ Page {
                 mouse.accepted = false
                 delegateRoot.drag.target = icon
                 deleteIcon.visible = true
+            }
+
+            onClicked: {
+                var url = ImageProcessing.exportAsPdf( model.imageID )
+                console.log("Share:",url)
+                var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
+                sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
             }
 
             onReleased: {

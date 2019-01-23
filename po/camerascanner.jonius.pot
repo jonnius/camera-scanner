@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: camerascanner.jonius\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-25 15:02+0000\n"
+"POT-Creation-Date: 2019-01-21 11:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/ImportPage.qml:36
-msgid "Import Image"
+#: ../qml/InfoPage.qml:12
+msgid "Info about Camera Scanner"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:6 camerascanner.desktop.in.h:1
-msgid "Camera Scanner"
+#: ../qml/InfoPage.qml:38
+msgid "Report a bug"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:19
-msgid "Information"
+#: ../qml/InfoPage.qml:44
+msgid "Contributors"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:28
-msgid "Add"
+#: ../qml/InfoPage.qml:50
+msgid "Source code"
 msgstr ""
 
-#: ../qml/components/CommonHeader.qml:37
-msgid "Save"
+#: ../qml/InfoPage.qml:56
+msgid "License"
 msgstr ""
 
 #: ../qml/components/EmptyDocument.qml:32
@@ -43,4 +43,24 @@ msgstr ""
 
 #: ../qml/components/EmptyDocument.qml:33
 msgid "Please, tap on the + icon to add images to the project"
+msgstr ""
+
+#: ../qml/components/CommonHeader.qml:8 camerascanner.desktop.in.h:1
+msgid "Camera Scanner"
+msgstr ""
+
+#: ../qml/components/CommonHeader.qml:21
+msgid "Information"
+msgstr ""
+
+#: ../qml/components/CommonHeader.qml:30
+msgid "Add"
+msgstr ""
+
+#: ../qml/components/CommonHeader.qml:39
+msgid "Save"
+msgstr ""
+
+#: ../qml/ImportPage.qml:36
+msgid "Import Image"
 msgstr ""
