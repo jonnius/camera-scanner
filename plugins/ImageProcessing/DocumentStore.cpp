@@ -145,9 +145,9 @@ QString DocumentStore::addDocument(const QString &url, QString id)
 
     if (!m_documents.count(id))
     {
-        Document d = newDoc ? createDocument(url, extractor)
-                     : loadDocument(url, getDocImagePath(id));
-        m_documents.insert(std::pair<QString,Document>(id, d));
+        m_documents.insert(std::pair<QString,Document>(id,
+                           newDoc ? createDocument(url, extractor)
+                           : loadDocument(url, getDocImagePath(id))));
         return id;
     }
     else
@@ -161,7 +161,7 @@ void DocumentStore::cacheDocument(const QString &id)
 {
     if (m_documents.count(id))
     {
-        Document d = m_documents.at(id);
+        Document &d = m_documents.at(id);
         QString rawPath = getRawImagePath(id);
         QString docPath = getDocImagePath(id);
         QFile(docPath).remove();
@@ -251,7 +251,7 @@ QString DocumentStore::getImageURL(const QString &id)
 {
     if (m_documents.count(id))
     {
-        Document d = m_documents.at(id);
+        Document &d = m_documents.at(id);
         QString imagePath = d.docExtracted() ? getDocImagePath(id)
                             : getRawImagePath(id);
         return path2URL(imagePath);
@@ -265,17 +265,22 @@ QString DocumentStore::getImageURL(const QString &id)
 
 QString DocumentStore::exportPdf(const QStringList &ids)
 {
-    QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/test.pdf";
+    QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/export.pdf";
     qDebug() << "Writing pdf to " << path;
+
+    // TODO make divider configurable
+    // reduces the default resolution of 1200 DPI by the divider.
+    double resDivider = 4.0;
 
     QPdfWriter pdfwriter(path);
     QPainter painter(&pdfwriter);
     pdfwriter.setPageSize(QPagedPaintDevice::A4);
+    painter.scale(resDivider, resDivider);
 
     bool firstPage = true;
     for (QString id : ids)
     {
-        Document d = m_documents.at(id);
+        Document &d = m_documents.at(id);
         if (!d.docExtracted())
             continue;
 
@@ -284,9 +289,11 @@ QString DocumentStore::exportPdf(const QStringList &ids)
         else
             pdfwriter.newPage();
 
-        //~ painter.drawPixmap(QRect(0,0,pdfwriter.logicalDpiX()*8.3,pdfwriter.logicalDpiY()*11.7),
-        //~ QPixmap((imgurl.at(var)).toString()));
-        painter.drawImage(0, 0, convertMat2QImage(d.getDocImage()));
+        QSize sizeA4 = pdfwriter.pageLayout().pageSize().sizePixels(
+                           pdfwriter.resolution()/resDivider);
+        QImage imageA4 = convertMat2QImage(d.getDocImage());
+        imageA4 = imageA4.scaled(sizeA4);
+        painter.drawImage(0, 0, imageA4);
     }
 
     if (firstPage)
