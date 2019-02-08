@@ -6,12 +6,12 @@ set(OpenCV_DIR "${CMAKE_BINARY_DIR}/../opencv/${ARCH_TRIPLET}")
 find_package(OpenCV REQUIRED core imgproc highgui imgcodecs)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-set(
-    SRC
+set(SRC
     plugin.cpp
     ImageProcessing.cpp
     Document.cpp
     DocumentStore.cpp
+    ONSExtractor.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

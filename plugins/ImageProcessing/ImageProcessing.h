@@ -46,7 +46,6 @@ public:
 
 signals:
     void imageAdded(const QString &id);
-    void imageProcessed(const QString &id, const bool &success);
     void imageRemoved(const QString &id);
 
 private:

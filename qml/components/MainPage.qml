@@ -17,26 +17,13 @@ Page {
     }
 
     function imageAdded ( id ) {
-      console.log("imageAdded() mit " + id +" aufgerufen")
+      //console.log("imageAdded() mit " + id +" aufgerufen")
         imageModel.append (
           {
             imageID: id,
             imgout: "image://documents/"+id
           }
         )
-    }
-
-    function imageProcessed ( id, success ) {
-        console.log("onImageProcessed() mit " + id +" aufgerufen")
-        for (var i = 0; i < imageModel.count; i++) {
-          var tempImage = imageModel.get(i)
-          if (tempImage.imageID === id)
-          {
-            console.log("Image " + id + " found at " + i)
-            tempImage.imgout = "image://documents/"+id
-            imageModel.set(i, tempImage)
-          }
-        }
     }
 
     Connections {

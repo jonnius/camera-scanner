@@ -10,7 +10,6 @@
 #include <QDir>
 
 #include "ImageProcessing.h"
-#include "Document.h"
 
 using namespace DocumentScanner;
 
@@ -32,15 +31,6 @@ void ImageProcessing::addImage(const QString &imageURL)
     QString id = m_store.addDocument(imageURL);
     m_store.cacheDocument(id);
     emit imageAdded(id);
-    processImage(id);
-}
-
-void ImageProcessing::processImage(const QString &id)
-{
-    Document &d = m_store.accessDocument(id);
-    d.detectDocument();
-    m_store.cacheDocument(id);
-    emit imageProcessed(id, d.docDetected());
 }
 
 void ImageProcessing::removeImage(const QString &id)
@@ -84,7 +74,7 @@ QStringList ImageProcessing::exportAllAsImages()
 
 bool ImageProcessing::isDocument(const QString &id)
 {
-    return m_store.accessDocument(id).docDetected();
+    return m_store.isExtractedDoc(id);
 }
 
 void ImageProcessing::setParam(const QString &key, const QString &value)

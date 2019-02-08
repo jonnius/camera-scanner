@@ -1,141 +1,48 @@
-#ifndef Document_H
-#define Document_H
+#ifndef DOCUMENT_H
+#define DOCUMENT_H
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+
+#include "AbstractDocumentExtractor.h"
 
 namespace DocumentScanner
 {
 
-typedef std::vector<cv::Point> Contour;
-
 /**
-  * CQuadrilateral is a data structure containg contour and
-  * quadrilateral of the detected document inside the image.
-  */
-class CQuadrilateral
-{
-public:
-    CQuadrilateral()
-    {
-        m_initialized = false;
-    }
-
-    CQuadrilateral(Contour contour, std::vector<cv::Point> points) :
-        m_contour(contour), m_points(points)
-    {
-        m_initialized = true;
-    }
-
-    bool initialized()
-    {
-        return m_initialized;
-    }
-
-    /**
-      * Release memory by deleting points.
-      */
-    void release()
-    {
-        m_initialized = false;
-        m_points.clear();
-        m_contour.clear();
-    }
-
-    Contour getContour()
-    {
-        return m_contour;
-    }
-
-    std::vector<cv::Point> getPoints()
-    {
-        return m_points;
-    }
-
-private:
-    Contour m_contour;
-    std::vector<cv::Point> m_points;
-    bool m_initialized;
-};
-
-/**
-  * Document represents one document and its detection inside
-  * an image. It is initialized by specifying an image and will
-  * detect and cut out the document, rectify and enhance it.
+  * The Document class holds the raw image of a document page, the
+  * information whether a document has been sucessfully extracted and if
+  * so, the processed document image.
   */
 class Document
 {
 public:
-    Document() : m_success(false)
-    {
-        /* empty */
-    }
-
-    Document(const cv::Mat & image) : m_success(false),
-        m_original(image),
-        m_processed(image)
-    {
-        /* empty */
-    }
-    
-    void restoreDocument(const cv::Mat & doc)
-    {
-		m_processed = doc;
-		m_success = true;
-	}
-
-    void detectDocument();
-
-    cv::Mat getProcessed()
-    {
-        return m_processed;
-    }
+    /**
+     * Set the raw image and let the specified extractor produce the
+     * document image.
+     */
+    Document(const cv::Mat & rawImg,
+             const AbstractDocumentExtractor &extractor);
 
     /**
-      * Release memory. This will let the object in an uninitialized
-      * state. Use detectDocument() to process a new image.
-      */
-    void release()
-    {
-        m_processed.release();
-        m_original.release();
-        m_quadrilateral.release();
-    }
+     * Set the raw image and the processed document image. If
+     * docExtracted is false, docImg is ignored.
+     */
+    Document(const cv::Mat & rawImg,
+             const cv::Mat & docImg,
+             bool docExtracted = true);
 
-    std::vector<cv::Point> getContour()
-    {
-        return m_quadrilateral.getContour();
-    }
-
-    std::vector<cv::Point> getQuadrilateral()
-    {
-        return m_quadrilateral.getPoints();
-    }
-
-    cv::Mat getDocImage()
-    {
-        return m_processed;
-    }
-
-    cv::Mat getRawImage()
-    {
-        return m_original;
-    }
-
-    bool docDetected()
-    {
-        return m_success;
-    }
+    cv::Mat getRawImage();
+    /**
+     * Returns the processed document image. If the document
+     * extraction has failed, the raw image is returned instead.
+     */
+    cv::Mat getDocImage();
+    bool docExtracted();
 
 private:
-    cv::Mat m_original;
-    cv::Mat m_processed;
-    CQuadrilateral m_quadrilateral;
-    std::vector<cv::Point> m_previewPoints; // TODO Sinn prüfen
-    cv::Size m_previewSize;
-    bool m_success;
+    cv::Mat m_rawImg;
+    cv::Mat m_docImg;
+    bool m_docExtracted;
 };
 }
 

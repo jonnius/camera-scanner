@@ -4,6 +4,7 @@
 #include <QQuickImageProvider>
 
 #include "Document.h"
+#include "ONSExtractor.h"
 
 namespace DocumentScanner
 {
@@ -22,15 +23,15 @@ public:
     QString addDocument(const QString &url, QString id = "");
     void cacheDocument(const QString &id);
     void removeDocument(const QString &id);
-    Document& accessDocument(const QString &id);
     QStringList getIDs();
     QStringList restoreCache();
     QString exportPdf(const QStringList &ids);
+    bool isExtractedDoc(const QString &id);
     QString getImageURL(const QString &id);
 
 private:
     std::map<QString,Document> m_documents;
-    Document m_dummy;
+    ONSExtractor extractor;
 };
 }
 
