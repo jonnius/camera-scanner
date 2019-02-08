@@ -8,9 +8,7 @@
     "template": "cmake",
     "name": "opencv",
     "make_jobs": "4",
-    "architectures": ["armhf", "amd64"],
     "dependencies": ["libjpeg-dev", "libpng-dev", "libtiff-dev"],
-    "build_args": "-DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=core,imgproc,highgui,imgcodecs -DBUILD_EXAMPLES=OFF -DBUILD_DOCS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_OPENCV_APPS=OFF -DWITH_TBB=OFF -DWITH_OPENMP=OFF -DWITH_IPP=OFF -DWITH_NVCUVID=OFF -DWITH_CUDA=OFF -DWITH_CSTRIPES=OFF -DWITH_OPENCL=OFF -DBUILD_SHARED_LIBS=OFF",
-    "prebuild": "git submodule update --init --recursive"
+    "build_args": "-DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=core,imgproc,highgui,imgcodecs -DBUILD_EXAMPLES=OFF -DBUILD_DOCS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_OPENCV_APPS=OFF -DWITH_TBB=OFF -DWITH_OPENMP=OFF -DWITH_IPP=OFF -DWITH_NVCUVID=OFF -DWITH_CUDA=OFF -DWITH_CSTRIPES=OFF -DWITH_OPENCL=OFF -DBUILD_SHARED_LIBS=OFF"
   }]
 }
