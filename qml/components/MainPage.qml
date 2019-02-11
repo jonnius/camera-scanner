@@ -26,10 +26,22 @@ Page {
         )
     }
 
+    function removeImage ( id ) {
+        console.log("removeImage() mit " + id +" aufgerufen")
+        // Remove image from backend
+        ImageProcessing.removeImage ( id )
+        // Remove image from the model:
+        for (var i = 0; i < imageModel.count; i++) {
+          if (imageModel.get(i).imageID === id)
+          {
+            imageModel.remove(i)
+          }
+        }
+    }
+
     Connections {
       target: ImageProcessing
       onImageAdded: imageAdded (id)
-      onImageProcessed: imageProcessed (id, success)
     }
 
     ListModel {
@@ -155,21 +167,22 @@ Page {
                 deleteIcon.visible = true
             }
 
-            onClicked: {
-                var url = ImageProcessing.exportAsPdf( model.imageID )
-                console.log("Share:",url)
-                var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
-                sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
-            }
-
             onReleased: {
-                if(icon.Drag.target === deleteDragTarget) {
-                    imageModel.remove(model.index)
-                }
+                if (deleteIcon.visible == true)
+                {
+                    removeImage(model.imageID)
 
-                overlay.border.width = 0
-                delegateRoot.drag.target = undefined
-                deleteIcon.visible = false
+                    overlay.border.width = 0
+                    delegateRoot.drag.target = undefined
+                    deleteIcon.visible = false
+                }
+                else
+                {
+                    var url = ImageProcessing.exportAsPdf( model.imageID )
+                    console.log("Share:",url)
+                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
+                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
+                }
             }
         }
     }
