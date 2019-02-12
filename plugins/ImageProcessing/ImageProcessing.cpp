@@ -23,7 +23,6 @@ void ImageProcessing::restoreCache()
 {
     for (QString id : m_store.restoreCache())
         emit imageAdded(id);
-    exportAllAsPdf();
 }
 
 void ImageProcessing::addImage(const QString &imageURL)
@@ -45,23 +44,23 @@ void ImageProcessing::removeAll()
         removeImage(id);
 }
 
-QString ImageProcessing::exportAsPdf(const QString &id)
+QString ImageProcessing::exportAsPdf(const QString &id) const
 {
     QStringList ids = { id };
     return m_store.exportPdf(ids);
 }
 
-QString ImageProcessing::exportAllAsPdf()
+QString ImageProcessing::exportAllAsPdf() const
 {
     return m_store.exportPdf(m_store.getIDs());
 }
 
-QString ImageProcessing::exportAsImage(const QString &id)
+QString ImageProcessing::exportAsImage(const QString &id) const
 {
     return m_store.getImageURL(id);
 }
 
-QStringList ImageProcessing::exportAllAsImages()
+QStringList ImageProcessing::exportAllAsImages() const
 {
     QStringList ids = m_store.getIDs();
     QStringList urls;
@@ -72,7 +71,7 @@ QStringList ImageProcessing::exportAllAsImages()
     return urls;
 }
 
-bool ImageProcessing::isDocument(const QString &id)
+bool ImageProcessing::isDocument(const QString &id) const
 {
     return m_store.isExtractedDoc(id);
 }
@@ -83,8 +82,14 @@ void ImageProcessing::setParam(const QString &key, const QString &value)
 //TODO
 }
 
-QString ImageProcessing::getParam(const QString &key)
+QString ImageProcessing::getParam(const QString &key) const
 {
     qDebug() << "ImageProcessing::getParam() not yet implemented";
+//TODO
+}
+
+QStringList ImageProcessing::getAvailableParams() const
+{
+    qDebug() << "ImageProcessing::getAvailableParams() not yet implemented";
 //TODO
 }

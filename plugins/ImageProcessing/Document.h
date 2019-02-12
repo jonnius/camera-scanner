@@ -31,13 +31,13 @@ public:
              const cv::Mat & docImg,
              bool docExtracted = true);
 
-    cv::Mat getRawImage();
+    cv::Mat getRawImage() const;
     /**
      * Returns the processed document image. If the document
      * extraction has failed, the raw image is returned instead.
      */
-    cv::Mat getDocImage();
-    bool docExtracted();
+    cv::Mat getDocImage() const;
+    bool docExtracted() const;
 
 private:
     cv::Mat m_rawImg;
