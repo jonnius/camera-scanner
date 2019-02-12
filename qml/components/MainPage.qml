@@ -26,19 +26,6 @@ Page {
         )
     }
 
-    function removeImage ( id ) {
-        console.log("removeImage() mit " + id +" aufgerufen")
-        // Remove image from backend
-        ImageProcessing.removeImage ( id )
-        // Remove image from the model:
-        for (var i = 0; i < imageModel.count; i++) {
-          if (imageModel.get(i).imageID === id)
-          {
-            imageModel.remove(i)
-          }
-        }
-    }
-
     Connections {
       target: ImageProcessing
       onImageAdded: imageAdded (id)
@@ -46,8 +33,6 @@ Page {
 
     ListModel {
         id: imageModel
-        //ListElement {imgout: "calendaris.png"}
-        //ListElement {imgout: "/home/phablet/.cache/doc-scanner.dslul/1479221316289.jpg_out.png"}
     }
 
     Component {
@@ -73,7 +58,6 @@ Page {
             width: gridview.cellWidth
             height: gridview.cellHeight
             drag.smoothed: true
-            //drag.target: icon
 
             Item {
                 id: icon
@@ -170,7 +154,8 @@ Page {
             onReleased: {
                 if (deleteIcon.visible == true)
                 {
-                    removeImage(model.imageID)
+                    ImageProcessing.removeImage ( model.imageID )
+                    imageModel.remove( index )
 
                     overlay.border.width = 0
                     delegateRoot.drag.target = undefined
