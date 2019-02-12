@@ -21,13 +21,13 @@ public:
                         const QSize &requestedSize) override;
 
     QString addDocument(const QString &url, QString id = "");
-    void cacheDocument(const QString &id);
+    void cacheDocument(const QString &id) const;
     void removeDocument(const QString &id);
-    QStringList getIDs();
+    QStringList getIDs() const;
     QStringList restoreCache();
-    QString exportPdf(const QStringList &ids);
-    bool isExtractedDoc(const QString &id);
-    QString getImageURL(const QString &id);
+    QString exportPdf(const QStringList &ids) const;
+    bool isExtractedDoc(const QString &id) const;
+    QString getImageURL(const QString &id) const;
 
 private:
     std::map<QString,Document> m_documents;

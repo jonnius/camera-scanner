@@ -24,17 +24,17 @@ Document::Document(const Mat & rawImg,
         m_docImg = Mat();
 }
 
-Mat Document::getRawImage()
+Mat Document::getRawImage() const
 {
     return m_rawImg;
 }
 
-Mat Document::getDocImage()
+Mat Document::getDocImage() const
 {
     return m_docExtracted ? m_docImg : m_rawImg;
 }
 
-bool Document::docExtracted()
+bool Document::docExtracted() const
 {
     return m_docExtracted;
 }

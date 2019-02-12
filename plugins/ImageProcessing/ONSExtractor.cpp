@@ -41,6 +41,7 @@ struct diffComparator
     }
 };
 
+inline
 vector<Border> findCandidates(const Mat &src)
 {
     // Scale to height of 500
@@ -78,6 +79,7 @@ vector<Border> findCandidates(const Mat &src)
     return candidates;
 }
 
+inline
 Quad sortPoints(const Quad &src)
 {
     Quad result(4);
@@ -97,6 +99,7 @@ Quad sortPoints(const Quad &src)
     return result;
 }
 
+inline
 bool insideArea(const Quad &rp, const Size &size)
 {
     int width = size.width;
@@ -148,6 +151,7 @@ bool insideArea(const Quad &rp, const Size &size)
            && rp[3].x <= leftPos  && rp[3].y >= bottomPos;
 }
 
+inline
 bool findQuad(const vector<Border> &candidates,
               const Size &srcSize,
               Quad &quad)
@@ -206,6 +210,7 @@ bool findQuad(const vector<Border> &candidates,
     return false;
 }
 
+inline
 void rectify(const Quad &pts, const Mat &src, Mat &dst)
 {
     assert(pts.size() == 4);
@@ -257,6 +262,7 @@ void rectify(const Quad &pts, const Mat &src, Mat &dst)
  * @param src
  * @param threshold
  */
+inline
 void colorThresh(const int &threshold, Mat &img)
 {
     assert(img.type() == CV_8UC3);
@@ -285,6 +291,7 @@ void colorThresh(const int &threshold, Mat &img)
     }
 }
 
+inline
 void enhanceDocument(Mat &img)
 {
     //TODO make params configurable

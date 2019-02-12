@@ -13,6 +13,7 @@ using namespace DocumentScanner;
 using namespace cv;
 
 
+inline
 QImage convertMat2QImage(const Mat &img)
 {
     if (!img.data)
@@ -33,17 +34,20 @@ QImage convertMat2QImage(const Mat &img)
                   rgb.step, QImage::Format_RGB888).copy();
 }
 
+inline
 QString getTimeStampNow()
 {
     return QString::number(std::chrono::duration_cast<std::chrono::milliseconds>(
                                std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
+inline
 QString joinPath(QString d1, QString d2)
 {
     return QFileInfo(QDir(d1), d2).absoluteFilePath();
 }
 
+inline
 QString getDocumentBaseDir()
 {
     QString path = joinPath(QStandardPaths::writableLocation(QStandardPaths::CacheLocation), "docs");
@@ -55,6 +59,7 @@ QString getDocumentBaseDir()
     return path;
 }
 
+inline
 QString getDocumentDir(const QString &id)
 {
     QString path = joinPath(getDocumentBaseDir(), id);
@@ -66,6 +71,7 @@ QString getDocumentDir(const QString &id)
     return path;
 }
 
+inline
 QStringList getIDsFromCache()
 {
     QDir base(getDocumentBaseDir());
@@ -73,16 +79,19 @@ QStringList getIDsFromCache()
     return base.entryList();
 }
 
+inline
 QString getRawImagePath(const QString &id)
 {
     return joinPath(getDocumentDir(id), "raw.jpg");
 }
 
+inline
 QString getDocImagePath(const QString &id)
 {
     return joinPath(getDocumentDir(id), "doc.jpg");
 }
 
+inline
 QString URL2Path(const QString &URL)
 {
     if (URL.startsWith("file://"))
@@ -92,11 +101,13 @@ QString URL2Path(const QString &URL)
     return URL;
 }
 
+inline
 QString path2URL(const QString &path)
 {
     return "file://"+path;
 }
 
+inline
 bool loadImage(const QString &imageURL, Mat &img)
 {
     QString imagePath = URL2Path(imageURL);
@@ -104,6 +115,7 @@ bool loadImage(const QString &imageURL, Mat &img)
     return img.data;
 }
 
+inline
 Document loadDocument(const QString &imageURL, const QString &docURL)
 {
     Mat img, doc;
@@ -123,6 +135,7 @@ Document loadDocument(const QString &imageURL, const QString &docURL)
     return Document(img, doc, docFound);
 }
 
+inline
 Document createDocument(const QString &imageURL, const AbstractDocumentExtractor &extractor)
 {
     Mat img;
@@ -157,11 +170,11 @@ QString DocumentStore::addDocument(const QString &url, QString id)
     }
 }
 
-void DocumentStore::cacheDocument(const QString &id)
+void DocumentStore::cacheDocument(const QString &id) const
 {
     if (m_documents.count(id))
     {
-        Document &d = m_documents.at(id);
+        const Document &d = m_documents.at(id);
         QString rawPath = getRawImagePath(id);
         QString docPath = getDocImagePath(id);
         QFile(docPath).remove();
@@ -201,7 +214,7 @@ void DocumentStore::removeDocument(const QString &id)
     }
 }
 
-QStringList DocumentStore::getIDs()
+QStringList DocumentStore::getIDs() const
 {
     QStringList ids;
     ids.reserve(m_documents.size());
@@ -247,11 +260,11 @@ QImage DocumentStore::requestImage(const QString &id, QSize *size,
     return img;
 }
 
-QString DocumentStore::getImageURL(const QString &id)
+QString DocumentStore::getImageURL(const QString &id) const
 {
     if (m_documents.count(id))
     {
-        Document &d = m_documents.at(id);
+        const Document &d = m_documents.at(id);
         QString imagePath = d.docExtracted() ? getDocImagePath(id)
                             : getRawImagePath(id);
         return path2URL(imagePath);
@@ -263,7 +276,7 @@ QString DocumentStore::getImageURL(const QString &id)
     }
 }
 
-QString DocumentStore::exportPdf(const QStringList &ids)
+QString DocumentStore::exportPdf(const QStringList &ids) const
 {
     QString path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/export.pdf";
     qDebug() << "Writing pdf to " << path;
@@ -280,7 +293,7 @@ QString DocumentStore::exportPdf(const QStringList &ids)
     bool firstPage = true;
     for (QString id : ids)
     {
-        Document &d = m_documents.at(id);
+        const Document &d = m_documents.at(id);
         if (!d.docExtracted())
             continue;
 
@@ -303,7 +316,7 @@ QString DocumentStore::exportPdf(const QStringList &ids)
     return path;
 }
 
-bool DocumentStore::isExtractedDoc(const QString &id)
+bool DocumentStore::isExtractedDoc(const QString &id) const
 {
     if (m_documents.count(id))
     {
