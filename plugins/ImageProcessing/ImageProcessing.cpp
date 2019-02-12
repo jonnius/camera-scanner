@@ -23,7 +23,6 @@ void ImageProcessing::restoreCache()
 {
     for (QString id : m_store.restoreCache())
         emit imageAdded(id);
-    exportAllAsPdf();
 }
 
 void ImageProcessing::addImage(const QString &imageURL)
