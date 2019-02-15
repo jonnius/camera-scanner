@@ -31,5 +31,5 @@ MainView {
         anchors.fill: parent
     }
 
-	Component.onCompleted: ImageProcessing.restoreCache()
+    Component.onCompleted: ImageProcessing.restoreCache()
 }
