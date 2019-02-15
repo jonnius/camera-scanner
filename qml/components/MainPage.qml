@@ -6,6 +6,7 @@ import ImageProcessing 1.0
 import Ubuntu.Content 1.3
 import Ubuntu.Components.Popups 1.3
 import "../components"
+import "../single-image"
 
 Page {
     id: mainPage
@@ -17,26 +18,28 @@ Page {
     }
 
     function imageAdded ( id ) {
-      //console.log("imageAdded() mit " + id +" aufgerufen")
+        //console.log("imageAdded() mit " + id +" aufgerufen")
         imageModel.append (
-          {
-            imageID: id,
-            imgout: "image://documents/"+id
-          }
+            {
+                imageID: id,
+                imgout: "image://documents/"+id
+            }
         )
     }
 
     Connections {
-      target: ImageProcessing
-      onImageAdded: imageAdded (id)
+        target: ImageProcessing
+        onImageAdded: imageAdded (id)
     }
 
     ListModel {
         id: imageModel
+        //ListElement {imgout: "/home/phablet/.cache/camerascanner.jonius/jd-da-02.jpg"}
     }
 
     Component {
         id: shareDialog
+
         ContentShareDialog {
             Component.onDestruction: exportCompleted()
         }
@@ -91,6 +94,7 @@ Page {
 
                 Image {
                     id: mainImg
+
                     anchors {
                         fill: parent
                         leftMargin: mainView.gridmargin
@@ -98,6 +102,7 @@ Page {
                         topMargin: 1.5*mainView.gridmargin
                         bottomMargin: 1.5*mainView.gridmargin
                     }
+
                     asynchronous: true
                     fillMode: Image.PreserveAspectFit
                     source: Qt.resolvedUrl(model.imgout)
@@ -152,6 +157,7 @@ Page {
             }
 
             onReleased: {
+                /*
                 if (deleteIcon.visible == true)
                 {
                     ImageProcessing.removeImage ( model.imageID )
@@ -168,12 +174,15 @@ Page {
                     var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
                     sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
                 }
+                */
+                pageStack.push(Qt.resolvedUrl("../single-image/SingleImage.qml"), {"currentImage": Qt.resolvedUrl(model.imgout), "currentID": model.imageID, "currentIndex": index})
             }
         }
     }
 
     Item {
         id: topPanel
+
         anchors {
             left: parent.left
             right: parent.right
@@ -194,11 +203,12 @@ Page {
                 color: UbuntuColors.red
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: parent.height
-                }
+            }
 
             states: [
                 State {
                     when: deleteDragTarget.containsDrag
+
                     PropertyChanges {
                         target: deleteIcon
                         color: UbuntuColors.coolGrey
