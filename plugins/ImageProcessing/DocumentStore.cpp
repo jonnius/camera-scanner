@@ -96,7 +96,7 @@ QString URL2Path(const QString &URL)
 {
     if (URL.startsWith("file://"))
     {
-        return URL.right(URL.size()-7);
+        return QUrl(URL).toLocalFile();
     }
     return URL;
 }
@@ -104,7 +104,7 @@ QString URL2Path(const QString &URL)
 inline
 QString path2URL(const QString &path)
 {
-    return "file://"+path;
+    return QUrl::fromLocalFile(path).toString();
 }
 
 inline
