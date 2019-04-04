@@ -1,7 +1,5 @@
 #include "Document.h"
 
-#include <QDebug>
-
 using namespace DocumentScanner;
 using namespace cv;
 

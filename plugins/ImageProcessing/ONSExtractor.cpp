@@ -7,7 +7,8 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <QDebug>
+
+#include "Debugger.h"
 
 using namespace cv;
 using namespace std;
@@ -74,7 +75,7 @@ vector<Border> findCandidates(const Mat &src)
     grayImage.release();
     cannedImage.release();
 
-    //~ qDebug() << candidates.size() << " contours found.";
+    //~ debug << candidates.size() << " contours found.";
 
     return candidates;
 }
@@ -117,18 +118,18 @@ bool insideArea(const Quad &rp, const Size &size)
 //	int leftPos = width/2-baseMeasure;
 //	int rightPos = width/2+baseMeasure;
 
-    //~ qDebug() << "Grenzen: " << leftPos << "," << rightPos << "," << topPos << "," << bottomPos;
-    //~ qDebug() << "Punkte: " << rp[0] << rp[1] << rp[2] << rp[3];
-    //~ qDebug() << "Größe: " << size;
-//	qDebug() << "baseMeasure: " << baseMeasure;
+    //~ debug << "Grenzen: " << leftPos << "," << rightPos << "," << topPos << "," << bottomPos;
+    //~ debug << "Punkte: " << rp[0] << rp[1] << rp[2] << rp[3];
+    //~ debug << "Größe: " << size;
+//	debug << "baseMeasure: " << baseMeasure;
 
-    //~ qDebug() << "Bed1: " << (rp[0].x <= leftPos  && rp[0].y <= topPos);
-    //~ qDebug() << "Bed2: " << (rp[1].x >= rightPos && rp[1].y <= topPos);
-    //~ qDebug() << "Bed3: " << (rp[2].x >= rightPos && rp[2].y >= bottomPos);
-    //~ qDebug() << "Bed4: " << (rp[3].x <= leftPos  && rp[3].y >= bottomPos);
+    //~ debug << "Bed1: " << (rp[0].x <= leftPos  && rp[0].y <= topPos);
+    //~ debug << "Bed2: " << (rp[1].x >= rightPos && rp[1].y <= topPos);
+    //~ debug << "Bed3: " << (rp[2].x >= rightPos && rp[2].y >= bottomPos);
+    //~ debug << "Bed4: " << (rp[3].x <= leftPos  && rp[3].y >= bottomPos);
 
     Mat test(size, CV_8UC3);
-    //			qDebug() << "Sorted points:";
+    //			debug << "Sorted points:";
     Vec3b white(255,255,255);
     Vec3b red(255,0,0);
     Vec3b green(0,255,0);
@@ -179,7 +180,7 @@ bool findQuad(const vector<Border> &candidates,
         vector<Point> points;
         Mat(approx).copyTo(points);
 
-        //~ qDebug() << "Candidate " << ic+1 << " has " << points.size();
+        //~ debug << "Candidate " << ic+1 << " has " << points.size();
 
         // select biggest 4 angles polygon
         if (points.size() == 4)
@@ -187,17 +188,17 @@ bool findQuad(const vector<Border> &candidates,
             Quad foundPoints = sortPoints(points);
 
             Mat test(srcSize, CV_8UC1);
-//			qDebug() << "Sorted points:";
+//			debug << "Sorted points:";
             for (size_t i = 0; i < 4; i++)
             {
                 test.at<unsigned char>(foundPoints[i].y, foundPoints[i].x) = 255;
-//				qDebug() << foundPoints[i];
+//				debug << foundPoints[i];
             }
 
 //			  namedWindow( "Eckpunkte", CV_WINDOW_AUTOSIZE );
 //			  imshow( "Eckpunkte", test);
 
-            //~ qDebug() << "InsideArea: " << insideArea(foundPoints, size);
+            //~ debug << "InsideArea: " << insideArea(foundPoints, size);
 
             if (insideArea(foundPoints, size))
             {
@@ -218,7 +219,7 @@ void rectify(const Quad &pts, const Mat &src, Mat &dst)
     // Scale to height of 500
     float ratio = src.size().height / 500.0;
 
-    //~ qDebug() << "Ratio: " << ratio;
+    //~ debug << "Ratio: " << ratio;
 
     Point tl = pts[0];
     Point tr = pts[1];
@@ -337,25 +338,25 @@ bool ONSExtractor::extractDocument(const Mat &rawImg,
     vector<Border> candidates;
     Quad quad;
 
-    qDebug() << "Starting document extraction...";
+    debug << "Starting document extraction...";
 
     // Find candidates
     candidates = findCandidates(rawImg);
-    //~ qDebug() << " " << candidates.size() << " candidates found.";
+    //~ debug << " " << candidates.size() << " candidates found.";
 
     // Find quad
     if (!findQuad(candidates, rawImg.size(), quad))
     {
-        qDebug() << " Didn't find a proper quad between the " << candidates.size() << " candidates.";
+        debug << " Didn't find a proper quad between the " << candidates.size() << " candidates.";
         return false;
     }
 
-    qDebug() << " Document detected. Processing image...";
+    debug << " Document detected. Processing image...";
 
     // Process image
     rectify(quad, rawImg, docImg);
     enhanceDocument(docImg);
 
-    qDebug() << " Document extraction finished.";
+    debug << " Document extraction finished.";
     return true;
 }
