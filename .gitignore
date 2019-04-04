@@ -36,3 +36,6 @@
 *.exe
 *.out
 *.app
+
+# Test directory
+/plugins/ImageProcessing/Test/*
