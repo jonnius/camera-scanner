@@ -3,6 +3,8 @@
 
 struct DebugPipe {} debug;
 
+//~ #define NOQT
+
 #ifdef NOQT
 	#include <iostream>
 	inline void print(std::string msg)
