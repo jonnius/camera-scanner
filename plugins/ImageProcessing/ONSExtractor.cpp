@@ -18,6 +18,8 @@ typedef vector<Point> Border;
 /** A Quad is meant to be a border consisting of exactly 4 points */
 typedef Border Quad;
 
+const int PROCESSINGHEIGHT = 500;
+
 struct BorderSort
 {
     bool operator()(const Border & a, const Border & b) const
@@ -45,9 +47,9 @@ struct diffComparator
 inline
 vector<Border> findCandidates(const Mat &src)
 {
-    // Scale to height of 500
-    float ratio = src.size().height / 500.0;
-    int height = 500;
+    // Scale to processing height
+    float ratio = 1.0 * src.size().height / PROCESSINGHEIGHT;
+    int height = PROCESSINGHEIGHT;
     int width = static_cast<int>(src.size().width / ratio);
     Size size(width, height);
 
@@ -81,7 +83,7 @@ vector<Border> findCandidates(const Mat &src)
 }
 
 inline
-Quad sortPoints(const Quad &src)
+Quad find4Corners(const Quad &src)
 {
     Quad result(4);
 
@@ -101,65 +103,13 @@ Quad sortPoints(const Quad &src)
 }
 
 inline
-bool insideArea(const Quad &rp, const Size &size)
-{
-    int width = size.width;
-    int height = size.height;
-    int baseMeasureHeight = height/4;
-    int baseMeasureWidth = width/4;
-
-    int bottomPos = height-baseMeasureHeight;
-    int topPos = baseMeasureHeight;
-    int leftPos = baseMeasureWidth;
-    int rightPos = width-baseMeasureWidth;
-
-//	int bottomPos = height-baseMeasure;
-//	int topPos = baseMeasure;
-//	int leftPos = width/2-baseMeasure;
-//	int rightPos = width/2+baseMeasure;
-
-    //~ debug << "Grenzen: " << leftPos << "," << rightPos << "," << topPos << "," << bottomPos;
-    //~ debug << "Punkte: " << rp[0] << rp[1] << rp[2] << rp[3];
-    //~ debug << "Größe: " << size;
-//	debug << "baseMeasure: " << baseMeasure;
-
-    //~ debug << "Bed1: " << (rp[0].x <= leftPos  && rp[0].y <= topPos);
-    //~ debug << "Bed2: " << (rp[1].x >= rightPos && rp[1].y <= topPos);
-    //~ debug << "Bed3: " << (rp[2].x >= rightPos && rp[2].y >= bottomPos);
-    //~ debug << "Bed4: " << (rp[3].x <= leftPos  && rp[3].y >= bottomPos);
-
-    Mat test(size, CV_8UC3);
-    //			debug << "Sorted points:";
-    Vec3b white(255,255,255);
-    Vec3b red(255,0,0);
-    Vec3b green(0,255,0);
-    Vec3b blue(0,0,255);
-    test.at<Vec3b>(rp[0]) = blue;
-    test.at<Vec3b>(rp[1]) = blue;
-    test.at<Vec3b>(rp[2]) = blue;
-    test.at<Vec3b>(rp[3]) = blue;
-    test.at<Vec3b>(topPos, leftPos) = red;
-    test.at<Vec3b>(topPos, rightPos) = red;
-    test.at<Vec3b>(bottomPos, rightPos) = red;
-    test.at<Vec3b>(bottomPos, leftPos) = red;
-
-//  namedWindow( "insideTest", CV_WINDOW_AUTOSIZE );
-//  imshow( "insideTest", test);
-
-    return rp[0].x <= leftPos  && rp[0].y <= topPos
-           && rp[1].x >= rightPos && rp[1].y <= topPos
-           && rp[2].x >= rightPos && rp[2].y >= bottomPos
-           && rp[3].x <= leftPos  && rp[3].y >= bottomPos;
-}
-
-inline
 bool findQuad(const vector<Border> &candidates,
               const Size &srcSize,
               Quad &quad)
 {
-    // Scale to height of 500
-    float ratio = srcSize.height / 500.0;
-    int height = 500;
+    // Scale to processing height
+    float ratio = 1.0 * srcSize.height / PROCESSINGHEIGHT;
+    int height = PROCESSINGHEIGHT;
     int width = static_cast<int>(srcSize.width / ratio);
     Size size(width, height);
 
@@ -180,32 +130,37 @@ bool findQuad(const vector<Border> &candidates,
         vector<Point> points;
         Mat(approx).copyTo(points);
 
-        //~ debug << "Candidate " << ic+1 << " has " << points.size();
+        // Minimum 4 points required
+        if (points.size() < 4)
+            continue;
 
-        // select biggest 4 angles polygon
-        if (points.size() == 4)
-        {
-            Quad foundPoints = sortPoints(points);
+        // Reduce to 4 corner points
+        Quad cornerPoints = find4Corners(points);
 
-            Mat test(srcSize, CV_8UC1);
-//			debug << "Sorted points:";
-            for (size_t i = 0; i < 4; i++)
-            {
-                test.at<unsigned char>(foundPoints[i].y, foundPoints[i].x) = 255;
-//				debug << foundPoints[i];
-            }
+        // Area of final contour
+        const double cornersArea = contourArea(cornerPoints);
 
-//			  namedWindow( "Eckpunkte", CV_WINDOW_AUTOSIZE );
-//			  imshow( "Eckpunkte", test);
+        // Check size of contour
+        if (cornersArea/width/height < 0.25)
+            continue;
 
-            //~ debug << "InsideArea: " << insideArea(foundPoints, size);
+        // Bounding boxes of whole contour and corner points only
+        Rect boxPolygone = boundingRect(points);
+        Rect boxCorners = boundingRect(cornerPoints);
+        const auto polygoneBoxArea = boxPolygone.width*boxPolygone.height;
+        const auto cornersBoxArea = boxCorners.width*boxCorners.height;
 
-            if (insideArea(foundPoints, size))
-            {
-                quad = foundPoints;
-                return true;
-            }
-        }
+        // Check if contour is tending to be a axes parallel rectangular
+        if (cornersArea/cornersBoxArea < 0.5)
+            continue;
+
+        // Check if contour are has changed by reducing to corner points
+        if (cornersBoxArea/polygoneBoxArea < 0.8)
+            continue;
+
+        // All checks passed
+        quad = cornerPoints;
+        return true;
     }
 
     return false;
@@ -216,8 +171,8 @@ void rectify(const Quad &pts, const Mat &src, Mat &dst)
 {
     assert(pts.size() == 4);
 
-    // Scale to height of 500
-    float ratio = src.size().height / 500.0;
+    // Scale to the processing height
+    float ratio = 1.0 * src.size().height / PROCESSINGHEIGHT;
 
     //~ debug << "Ratio: " << ratio;
 
@@ -304,14 +259,14 @@ void enhanceDocument(Mat &img)
 
     if (colorMode && filterMode)
     {
-        img.convertTo(img,-1, colorGain, colorBias);
+        img.convertTo(img, -1, colorGain, colorBias);
         Mat mask(img.size(), CV_8UC1);
         cvtColor(img, mask, COLOR_RGBA2GRAY);
 
         Mat copy(img.size(), CV_8UC3);
         img.copyTo(copy);
 
-        adaptiveThreshold(mask, mask, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 15, 15);
+        adaptiveThreshold(mask, mask, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 15, 5);
 
         img.setTo(Scalar(255,255,255));
         copy.copyTo(img,mask);
@@ -327,7 +282,7 @@ void enhanceDocument(Mat &img)
         cvtColor(img, img, COLOR_RGBA2GRAY);
         if (filterMode)
         {
-            adaptiveThreshold(img, img, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 15);
+            adaptiveThreshold(img, img, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 15, 5);
         }
     }
 }
