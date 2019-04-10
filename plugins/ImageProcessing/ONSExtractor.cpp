@@ -251,7 +251,7 @@ inline
 void enhanceDocument(Mat &img)
 {
     //TODO make params configurable
-    bool colorMode = true;
+    bool colorMode = false;
     bool filterMode = true;
     int colorThr = 110;
     float colorGain = 1.5; // contrast
