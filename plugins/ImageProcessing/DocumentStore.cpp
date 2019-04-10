@@ -22,14 +22,27 @@ QImage convertMat2QImage(const Mat &img)
         return QImage();
         //TODO throw exception
     }
-    if (img.type() != CV_8UC3)
+
+    Mat rgb(img.size(), CV_8UC3);
+    switch (img.type())
+    {
+    case CV_8UC1:
+    {
+        cvtColor(img, rgb, COLOR_GRAY2RGB);
+        break;
+    }
+    case CV_8UC3:
+    {
+        cvtColor(img, rgb, COLOR_BGR2RGB);
+        break;
+    }
+    default:
     {
         qDebug() << "Error: Tried to convert an Mat other than CV_8UC3 to QImage!";
         return QImage();
         //TODO throw exception
     }
-    Mat rgb(img.size(), CV_8UC3);
-    cvtColor(img, rgb, COLOR_BGR2RGB);
+    }
     return QImage((uchar*) rgb.data, rgb.cols, rgb.rows,
                   rgb.step, QImage::Format_RGB888).copy();
 }
