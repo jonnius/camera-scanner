@@ -76,20 +76,30 @@ bool ImageProcessing::isDocument(const QString &id) const
     return m_store.isExtractedDoc(id);
 }
 
-void ImageProcessing::setParam(const QString &key, const QString &value)
+void ImageProcessing::setDefaultConfig(const ExtractorConfig &conf)
 {
-    qDebug() << "ImageProcessing::setParam() not yet implemented";
-//TODO
+	//TODO
+	//~ qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = " << conf.colorThr;
+	qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = ";
 }
 
-QString ImageProcessing::getParam(const QString &key) const
+void ImageProcessing::getDefaultConfig(ExtractorConfig &conf) const
 {
-    qDebug() << "ImageProcessing::getParam() not yet implemented";
-//TODO
+	//~ conf.colorThr = 20;
+	qDebug() << "ImageProcessing::getDefaultConfig() conf.colorThr = 20";
+	//TODO
 }
 
-QStringList ImageProcessing::getAvailableParams() const
+void ImageProcessing::setConfig(const QString &id, const ExtractorConfig &conf)
 {
-    qDebug() << "ImageProcessing::getAvailableParams() not yet implemented";
-//TODO
+	//~ qDebug() << "ImageProcessing::setConfig() conf.colorThr = " << conf.colorThr;
+	qDebug() << "ImageProcessing::setConfig() conf.colorThr = ";
+	//TODO
+}
+
+void ImageProcessing::getConfig(const QString &id, ExtractorConfig &conf) const
+{
+	//~ conf.colorThr = 10;
+	qDebug() << "Image Processing: conf.colorThr = 10";
+	//TODO
 }

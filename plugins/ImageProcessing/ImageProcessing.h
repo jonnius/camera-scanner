@@ -5,6 +5,7 @@
 #include <QImage>
 
 #include "DocumentStore.h"
+#include "ExtractorConfig.h"
 
 /**
   * Qt Object that acts as an interface to the Image Processing.
@@ -38,11 +39,13 @@ public:
     Q_INVOKABLE bool isDocument(const QString &id) const;
 
     /** Set an image processing parameter */
-    Q_INVOKABLE void setParam(const QString &key, const QString &value);
+    Q_INVOKABLE void setDefaultConfig(const ExtractorConfig &conf);
     /** Get an image processing parameter */
-    Q_INVOKABLE QString getParam(const QString &key) const;
-    /** Get all available image processing parameters */
-    Q_INVOKABLE QStringList getAvailableParams() const;
+    Q_INVOKABLE void getDefaultConfig(ExtractorConfig &conf) const;
+    /** Set an image processing parameter */
+    Q_INVOKABLE void setConfig(const QString &id, const ExtractorConfig &conf);
+    /** Get an image processing parameter */
+    Q_INVOKABLE void getConfig(const QString &id, ExtractorConfig &conf) const;
 
 signals:
     void imageAdded(const QString &id);
