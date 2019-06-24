@@ -10,6 +10,7 @@ void ImageProcessingPlugin::registerTypes(const char *uri)
 {
     //@uri ImageProcessing
     qmlRegisterSingletonType<ImageProcessing>(uri, 1, 0, "ImageProcessing", [](QQmlEngine*, QJSEngine*) -> QObject* { return new ImageProcessing(m_store); });
+    //qmlRegisterType<ExtractorConfig>(uri, 1, 0, "ExtractorConfig");
 }
 
 void ImageProcessingPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

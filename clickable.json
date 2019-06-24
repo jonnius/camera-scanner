@@ -1,7 +1,7 @@
 {
   "template": "cmake",
   "kill": "qmlscene",
-  "dir": "build/camera-scanner",
+  "build_dir": "build/camera-scanner",
   "dependencies_target": [
     "libjpeg-dev",
     "libpng-dev",

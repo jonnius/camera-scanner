@@ -105,7 +105,8 @@ Quad find4Corners(const Quad &src)
 inline
 bool findQuad(const vector<Border> &candidates,
               const Size &srcSize,
-              Quad &quad)
+              Quad &quad,
+              const Mat& img)
 {
     // Scale to processing height
     float ratio = 1.0 * srcSize.height / PROCESSINGHEIGHT;
@@ -130,6 +131,14 @@ bool findQuad(const vector<Border> &candidates,
         vector<Point> points;
         Mat(approx).copyTo(points);
 
+        //~ debug << "Candidate " << ic+1 << " has " << points.size();
+
+        Mat test(size, CV_8UC3);
+        resize(img,test,size);
+
+        polylines(test, find4Corners(points), true, Scalar(255,0,0), 2);
+        polylines(test, points, true, Scalar(0,0,255), 1);
+
         // Minimum 4 points required
         if (points.size() < 4)
             continue;
@@ -137,18 +146,21 @@ bool findQuad(const vector<Border> &candidates,
         // Reduce to 4 corner points
         Quad cornerPoints = find4Corners(points);
 
-        // Area of final contour
+        // Bounding boxes of whole contour and corner points only
+        Rect boxPolygone = boundingRect(points);
+        Rect boxCorners = boundingRect(cornerPoints);
+
+        // Areas of bounding boxes and final contour
+        const int polygoneBoxArea = boxPolygone.width*boxPolygone.height;
+        const int cornersBoxArea = boxCorners.width*boxCorners.height;
         const double cornersArea = contourArea(cornerPoints);
 
         // Check size of contour
         if (cornersArea/width/height < 0.25)
             continue;
 
-        // Bounding boxes of whole contour and corner points only
-        Rect boxPolygone = boundingRect(points);
-        Rect boxCorners = boundingRect(cornerPoints);
-        const auto polygoneBoxArea = boxPolygone.width*boxPolygone.height;
-        const auto cornersBoxArea = boxCorners.width*boxCorners.height;
+        imshow("Bla", test);
+        waitKey(0);
 
         // Check if contour is tending to be a axes parallel rectangular
         if (cornersArea/cornersBoxArea < 0.5)
@@ -158,7 +170,6 @@ bool findQuad(const vector<Border> &candidates,
         if (cornersBoxArea/polygoneBoxArea < 0.8)
             continue;
 
-        // All checks passed
         quad = cornerPoints;
         return true;
     }
@@ -248,39 +259,36 @@ void colorThresh(const int &threshold, Mat &img)
 }
 
 inline
-void enhanceDocument(Mat &img)
+void enhanceDocument(Mat &img,
+                     const ONSExtractorConfig & conf)
 {
-    //TODO make params configurable
-    bool colorMode = false;
-    bool filterMode = true;
-    int colorThr = 110;
-    float colorGain = 1.5; // contrast
-    float colorBias = 0;   // bright
-
-    if (colorMode && filterMode)
+    if (conf.colorMode)
     {
-        img.convertTo(img, -1, colorGain, colorBias);
-        Mat mask(img.size(), CV_8UC1);
-        cvtColor(img, mask, COLOR_RGBA2GRAY);
+        if (conf.filterMode)
+        {
+            img.convertTo(img, -1, conf.colorGain, conf.colorBias);
+            Mat mask(img.size(), CV_8UC1);
+            cvtColor(img, mask, COLOR_RGBA2GRAY);
 
-        Mat copy(img.size(), CV_8UC3);
-        img.copyTo(copy);
+            Mat copy(img.size(), CV_8UC3);
+            img.copyTo(copy);
 
-        adaptiveThreshold(mask, mask, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 15, 5);
+            adaptiveThreshold(mask, mask, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 15, 5);
 
-        img.setTo(Scalar(255,255,255));
-        copy.copyTo(img,mask);
+            img.setTo(Scalar(255,255,255));
+            copy.copyTo(img,mask);
 
-        copy.release();
-        mask.release();
+            copy.release();
+            mask.release();
 
-        // special color threshold algorithm
-        colorThresh(colorThr, img);
+            // special color threshold algorithm
+            colorThresh(conf.colorThr, img);
+        }
     }
-    else if (!colorMode)
+    else
     {
         cvtColor(img, img, COLOR_RGBA2GRAY);
-        if (filterMode)
+        if (conf.filterMode)
         {
             adaptiveThreshold(img, img, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 15, 5);
         }
@@ -288,7 +296,7 @@ void enhanceDocument(Mat &img)
 }
 
 bool ONSExtractor::extractDocument(const Mat &rawImg,
-                                   Mat & docImg) const
+    Mat & docImg) const
 {
     vector<Border> candidates;
     Quad quad;
@@ -300,7 +308,7 @@ bool ONSExtractor::extractDocument(const Mat &rawImg,
     //~ debug << " " << candidates.size() << " candidates found.";
 
     // Find quad
-    if (!findQuad(candidates, rawImg.size(), quad))
+    if (!findQuad(candidates, rawImg.size(), quad, rawImg))
     {
         debug << " Didn't find a proper quad between the " << candidates.size() << " candidates.";
         return false;
@@ -310,7 +318,7 @@ bool ONSExtractor::extractDocument(const Mat &rawImg,
 
     // Process image
     rectify(quad, rawImg, docImg);
-    enhanceDocument(docImg);
+    enhanceDocument(docImg, m_conf);
 
     debug << " Document extraction finished.";
     return true;
