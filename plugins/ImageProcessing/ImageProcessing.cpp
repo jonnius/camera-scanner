@@ -18,7 +18,20 @@ ImageProcessing::ImageProcessing() : m_store(*DocumentStore::instance())
     /* empty */
     //TODO define default params
     //TODO load params from config
+    auto config = new ExtractorConfig(this);
+    setConfig(config);
 }
+
+void ImageProcessing::setConfig(ExtractorConfig* config)
+{
+  m_config = config;
+}
+
+ExtractorConfig * ImageProcessing::config()
+{
+  return m_config;
+}
+
 void ImageProcessing::restoreCache()
 {
     for (QString id : m_store.restoreCache())

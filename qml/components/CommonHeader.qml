@@ -28,6 +28,17 @@ PageHeader {
             },
 
             Action {
+                iconName: "settings"
+                shortcut: "Ctrl+e"
+                text: i18n.tr("Settings")
+
+                onTriggered: {
+                    Qt.inputMethod.hide();
+                    pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"));
+                }
+            },
+
+            Action {
                 iconName: "add"
                 shortcut: "Ctrl+a"
                 text: i18n.tr("Add")
