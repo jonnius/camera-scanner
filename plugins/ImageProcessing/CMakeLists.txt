@@ -7,6 +7,7 @@ set(SRC
     Document.cpp
     DocumentStore.cpp
     ONSExtractor.cpp
+    ExtractorConfig.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

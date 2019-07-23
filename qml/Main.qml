@@ -31,15 +31,15 @@ MainView {
         anchors.fill: parent
     }
 
-    ExtractorConfig {
+    /*ExtractorConfig {
         id: defaultConfig
-    }
+    }*/
 
     Component.onCompleted:
     {
         ImageProcessing.restoreCache();
-        ImageProcessing.getDefaultConfig(defaultConfig);
+        //ImageProcessing.getDefaultConfig(defaultConfig);
         //conf.colorThr = 33;
-        ImageProcessing.setDefaultConfig(defaultConfig);
+        //ImageProcessing.setDefaultConfig(defaultConfig);
     }
 }

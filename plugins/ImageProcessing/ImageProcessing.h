@@ -13,10 +13,14 @@
 class ImageProcessing: public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ExtractorConfig *config READ config WRITE setConfig NOTIFY configChanged)
 
 public:
     ImageProcessing(DocumentScanner::DocumentStore &d);
     ~ImageProcessing() = default;
+    
+    ExtractorConfig *config();
+    void setConfig(ExtractorConfig *config);
 
     /** Load cached images from disk and add them */
     Q_INVOKABLE void restoreCache();
@@ -50,10 +54,12 @@ public:
 signals:
     void imageAdded(const QString &id);
     void imageRemoved(const QString &id);
+    void configChanged(ExtractorConfig *config);
 
 private:
     DocumentScanner::DocumentStore &m_store;
     std::map<QString,QVariant> m_params;
+    ExtractorConfig *m_config = nullptr;
 };
 
 #endif
