@@ -47,7 +47,8 @@ public:
     /** Get an image processing parameter */
     Q_INVOKABLE void getDefaultConfig(ExtractorConfig &conf) const;
     /** Set an image processing parameter */
-    Q_INVOKABLE void setConfig(const QString &id, const ExtractorConfig &conf);
+    //Q_INVOKABLE void setConfig(const QString &id, const ExtractorConfig &conf);
+    void setConfig(const bool colorMode, const bool filterMode, const int colorThr, const float colorGain, const float colorBias);
     /** Get an image processing parameter */
     Q_INVOKABLE void getConfig(const QString &id, ExtractorConfig &conf) const;
 
@@ -56,6 +57,9 @@ signals:
     void imageRemoved(const QString &id);
     void configChanged(ExtractorConfig *config);
 
+private slots:
+  void onConfigChanged();
+    
 private:
     DocumentScanner::DocumentStore &m_store;
     std::map<QString,QVariant> m_params;
