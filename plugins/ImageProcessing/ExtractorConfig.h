@@ -3,6 +3,16 @@
 
 #include <QObject>
 
+#include "ONSExtractor.h"
+
+struct confType {
+    bool colorMode;
+    bool filterMode;
+    int colorThr;
+    float colorGain;
+    float colorBias;
+};
+
 class ExtractorConfig : public QObject
 {
 	Q_OBJECT
@@ -14,26 +24,20 @@ class ExtractorConfig : public QObject
 
 public:
 	ExtractorConfig(QObject *parent = 0);
-	
-    //~ bool colorMode = true;
-    //~ bool filterMode = true;
-    //~ int colorThr = 110;
-    //~ float colorGain = 1.5; // contrast
-    //~ float colorBias = 0;   // bright
     
-    Q_INVOKABLE void setColorMode(bool colorMode);
+    Q_INVOKABLE void setColorMode(const bool colorMode);
     bool colorMode() const;
     
-    Q_INVOKABLE void setFilterMode(bool filterMode);
+    Q_INVOKABLE void setFilterMode(const bool filterMode);
     bool filterMode() const;
     
-    Q_INVOKABLE void setColorThr(int colorThr);
+    Q_INVOKABLE void setColorThr(const int colorThr);
     int colorThr() const;
     
-    Q_INVOKABLE void setColorGain(float colorGain);
+    Q_INVOKABLE void setColorGain(const float colorGain);
     float colorGain() const;
     
-    Q_INVOKABLE void setColorBias(float colorBias);
+    Q_INVOKABLE void setColorBias(const float colorBias);
     float colorBias() const;
     
     Q_INVOKABLE void loadDefault();
