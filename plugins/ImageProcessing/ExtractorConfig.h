@@ -5,18 +5,10 @@
 
 #include "ONSExtractor.h"
 
-struct confType {
-    bool colorMode;
-    bool filterMode;
-    int colorThr;
-    float colorGain;
-    float colorBias;
-};
-
 class ExtractorConfig : public QObject
 {
-	Q_OBJECT
-	Q_PROPERTY(bool colorMode READ colorMode WRITE setColorMode NOTIFY colorModeChanged)
+    Q_OBJECT
+    Q_PROPERTY(bool colorMode READ colorMode WRITE setColorMode NOTIFY colorModeChanged)
     Q_PROPERTY(bool filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
     Q_PROPERTY(int colorThr READ colorThr WRITE setColorThr NOTIFY colorThrChanged)
     Q_PROPERTY(float colorGain READ colorGain WRITE setColorGain NOTIFY colorGainChanged)
@@ -50,12 +42,16 @@ signals:
     void colorBiasChanged(float colorBias);
     
 private:
-    bool m_colorMode = true;
-    bool m_filterMode = true;
-    int m_colorThr = 110;
-    float m_colorGain = 1.5;
-    float m_colorBias = 0.0;
-  
+    void resetValues();
+    void save();
+    void load();
+    void emitAll();
+
+    bool m_colorMode;
+    bool m_filterMode;
+    int m_colorThr;
+    float m_colorGain;
+    float m_colorBias;
 };
 
 
