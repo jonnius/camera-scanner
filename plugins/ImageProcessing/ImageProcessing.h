@@ -14,7 +14,7 @@ class ImageProcessing: public QObject
     Q_OBJECT
 
 public:
-    ImageProcessing(DocumentScanner::DocumentStore &d);
+    ImageProcessing();
     ~ImageProcessing() = default;
 
     /** Load cached images from disk and add them */

@@ -10,11 +10,24 @@ namespace DocumentScanner
 {
 class DocumentStore : public QQuickImageProvider
 {
-public:
+private:
     DocumentStore()
         : QQuickImageProvider(QQuickImageProvider::Image)
     {
         /* empty */
+    }
+    DocumentStore(const DocumentStore&) = delete;
+    DocumentStore& operator=(const DocumentStore&) = delete;
+    DocumentStore(DocumentStore&&) = delete;
+    DocumentStore& operator=(DocumentStore&&) = delete;
+
+public:
+    static DocumentStore * instance() {
+        static DocumentStore * _instance = nullptr;
+        if ( _instance == nullptr ) {
+            _instance = new DocumentStore();
+        }
+        return _instance;
     }
 
     QImage requestImage(const QString &id, QSize *size,

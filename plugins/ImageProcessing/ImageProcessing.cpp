@@ -13,7 +13,7 @@
 
 using namespace DocumentScanner;
 
-ImageProcessing::ImageProcessing(DocumentStore &d) : m_store(d)
+ImageProcessing::ImageProcessing() : m_store(*DocumentStore::instance())
 {
     /* empty */
     //TODO define default params
