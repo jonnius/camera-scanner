@@ -24,28 +24,28 @@ ImageProcessing::ImageProcessing() : m_store(*DocumentStore::instance())
 
 void ImageProcessing::setConfig(ExtractorConfig* config)
 {
-  m_config = config;
-  connect(m_config, &ExtractorConfig::filterModeChanged,
-          this, &ImageProcessing::onConfigChanged);
-  connect(m_config, &ExtractorConfig::colorModeChanged,
-          this, &ImageProcessing::onConfigChanged);
-  connect(m_config, &ExtractorConfig::colorThrChanged,
-          this, &ImageProcessing::onConfigChanged);
-  connect(m_config, &ExtractorConfig::colorGainChanged,
-          this, &ImageProcessing::onConfigChanged);  
-  connect(m_config, &ExtractorConfig::colorBiasChanged,
-          this, &ImageProcessing::onConfigChanged);
+    m_config = config;
+    connect(m_config, &ExtractorConfig::filterModeChanged,
+            this, &ImageProcessing::onConfigChanged);
+    connect(m_config, &ExtractorConfig::colorModeChanged,
+            this, &ImageProcessing::onConfigChanged);
+    connect(m_config, &ExtractorConfig::colorThrChanged,
+            this, &ImageProcessing::onConfigChanged);
+    connect(m_config, &ExtractorConfig::colorGainChanged,
+            this, &ImageProcessing::onConfigChanged);
+    connect(m_config, &ExtractorConfig::colorBiasChanged,
+            this, &ImageProcessing::onConfigChanged);
 }
 
 ExtractorConfig * ImageProcessing::config()
 {
-  return m_config;
+    return m_config;
 }
 
 void ImageProcessing::onConfigChanged()
 {
-  qDebug() << "Fast geschafft";
-  setConfig(m_config->colorMode(), m_config->filterMode(), m_config->colorThr(), m_config->colorGain(), m_config->colorBias());
+    qDebug() << "Fast geschafft";
+    setConfig(m_config->colorMode(), m_config->filterMode(), m_config->colorThr(), m_config->colorGain(), m_config->colorBias());
 }
 
 void ImageProcessing::restoreCache()
@@ -107,22 +107,22 @@ bool ImageProcessing::isDocument(const QString &id) const
 
 void ImageProcessing::setDefaultConfig(const ExtractorConfig &conf)
 {
-	//TODO
-	//~ qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = " << conf.colorThr;
-	qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = ";
+    //TODO
+    //~ qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = " << conf.colorThr;
+    qDebug() << "ImageProcessing::setDefaultConfig() conf.colorThr = ";
 }
 
 void ImageProcessing::getDefaultConfig(ExtractorConfig &conf) const
 {
-	//~ conf.colorThr = 20;
-	qDebug() << "ImageProcessing::getDefaultConfig() conf.colorThr = 20";
-	//TODO
+    //~ conf.colorThr = 20;
+    qDebug() << "ImageProcessing::getDefaultConfig() conf.colorThr = 20";
+    //TODO
 }
 
 void ImageProcessing::setConfig(const bool colorMode, const bool filterMode, const int colorThr, const float colorGain, const float colorBias)
 {
-  qDebug() << "colorMode: " << colorMode << "filterMode: " << filterMode << "colorThr: " << colorThr << "colorGain: " << colorGain << "colorBias: " << colorBias;
-  //TODO Die Werte müssen jetzt gespeichert oder für die Bildverarbeitungs weiter gegeben werden
+    qDebug() << "colorMode: " << colorMode << "filterMode: " << filterMode << "colorThr: " << colorThr << "colorGain: " << colorGain << "colorBias: " << colorBias;
+    //TODO Die Werte müssen jetzt gespeichert oder für die Bildverarbeitungs weiter gegeben werden
 }
 
 /*void ImageProcessing::setConfig(const QString &id, const ExtractorConfig &conf)
@@ -134,7 +134,7 @@ void ImageProcessing::setConfig(const bool colorMode, const bool filterMode, con
 
 void ImageProcessing::getConfig(const QString &id, ExtractorConfig &conf) const
 {
-	//~ conf.colorThr = 10;
-	qDebug() << "Image Processing: conf.colorThr = 10";
-	//TODO
+    //~ conf.colorThr = 10;
+    qDebug() << "Image Processing: conf.colorThr = 10";
+    //TODO
 }

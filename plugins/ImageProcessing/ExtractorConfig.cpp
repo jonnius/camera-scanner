@@ -22,7 +22,7 @@ void ExtractorConfig::setColorMode(const bool colorMode)
 {
     if(colorMode != m_colorMode) {
         m_colorMode = colorMode;
-	save();
+        save();
         emit colorModeChanged(m_colorMode);
     }
 }
@@ -36,7 +36,7 @@ void ExtractorConfig::setFilterMode(const bool filterMode)
 {
     if(filterMode != m_filterMode) {
         m_filterMode = filterMode;
-	save();
+        save();
         emit filterModeChanged(m_filterMode);
     }
 }
@@ -50,7 +50,7 @@ void ExtractorConfig::setColorThr(const int colorThr)
 {
     if(colorThr != m_colorThr) {
         m_colorThr = colorThr;
-	save();
+        save();
         emit colorThrChanged(m_colorThr);
     }
 }
@@ -64,7 +64,7 @@ void ExtractorConfig::setColorGain(const float colorGain)
 {
     if(colorGain != m_colorGain) {
         m_colorGain = colorGain;
-	save();
+        save();
         emit colorGainChanged(m_colorGain);
     }
 }
@@ -78,8 +78,8 @@ void ExtractorConfig::setColorBias(const float colorBias)
 {
     if(colorBias != m_colorBias) {
         m_colorBias = colorBias;
-	save();
-	emit colorBiasChanged(m_colorBias);
+        save();
+        emit colorBiasChanged(m_colorBias);
     }
 }
 
@@ -98,24 +98,24 @@ QString getConfigPath()
 void ExtractorConfig::save()
 {
     qDebug() << "Saving settings to config file...";
-   
+
     QJsonObject config;
-    
+
     config.insert(QString("colorMode"), QJsonValue(m_colorMode));
     config.insert(QString("filterMode"), QJsonValue(m_filterMode));
     config.insert(QString("colorThr"), QJsonValue(m_colorThr));
     config.insert(QString("colorGain"), QJsonValue(m_colorGain));
     config.insert(QString("colorBias"), QJsonValue(m_colorBias));
-    
+
     QJsonDocument d(config);
 
     QFile file;
     file.setFileName(getConfigPath());
     if (!file.open(QIODevice::WriteOnly)
-        || file.write(d.toJson(QJsonDocument::Indented)) < 0)
+            || file.write(d.toJson(QJsonDocument::Indented)) < 0)
     {
-	qDebug() << "Failed to write to config file.";
-	return;
+        qDebug() << "Failed to write to config file.";
+        return;
     }
 }
 
@@ -126,28 +126,28 @@ void ExtractorConfig::load()
     file.setFileName(getConfigPath());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-	qDebug() << "No config file found. Setting default values...";
-	return;
+        qDebug() << "No config file found. Setting default values...";
+        return;
     }
     QString json = file.readAll();
     file.close();
-    
+
     QJsonDocument d = QJsonDocument::fromJson(json.toUtf8());
-    
+
     if (!d.isObject())
     {
-	qDebug() << "ERROR: Invalid config file. Setting default values...";
-	return;
+        qDebug() << "ERROR: Invalid config file. Setting default values...";
+        return;
     }
 
     QJsonObject config = d.object();
-    
+
     QJsonValue colorMode = config.value(QString("colorMode"));
     QJsonValue filterMode = config.value(QString("filterMode"));
     QJsonValue colorThr = config.value(QString("colorThr"));
     QJsonValue colorGain = config.value(QString("colorGain"));
     QJsonValue colorBias = config.value(QString("colorBias"));
-    
+
     setColorMode(colorMode.toBool(m_colorMode));
     setFilterMode(filterMode.toBool(m_filterMode));
     setColorThr(colorThr.toInt(m_colorThr));

@@ -32,13 +32,13 @@ public:
     bool extractDocument(const cv::Mat & rawImg,
                          cv::Mat & docImg) const;
 
-	void setConfig(const ONSExtractorConfig & conf)
-	{
-		m_conf = conf;
-	}
+    void setConfig(const ONSExtractorConfig & conf)
+    {
+        m_conf = conf;
+    }
 
 private:
-	ONSExtractorConfig m_conf;
+    ONSExtractorConfig m_conf;
 };
 }
 

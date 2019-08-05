@@ -18,7 +18,7 @@ class ImageProcessing: public QObject
 public:
     ImageProcessing();
     ~ImageProcessing() = default;
-    
+
     ExtractorConfig *config();
     void setConfig(ExtractorConfig *config);
 
@@ -58,8 +58,8 @@ signals:
     void configChanged(ExtractorConfig *config);
 
 private slots:
-  void onConfigChanged();
-    
+    void onConfigChanged();
+
 private:
     DocumentScanner::DocumentStore &m_store;
     std::map<QString,QVariant> m_params;

@@ -296,7 +296,7 @@ void enhanceDocument(Mat &img,
 }
 
 bool ONSExtractor::extractDocument(const Mat &rawImg,
-    Mat & docImg) const
+                                   Mat & docImg) const
 {
     vector<Border> candidates;
     Quad quad;
