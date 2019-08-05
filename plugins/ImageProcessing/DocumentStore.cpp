@@ -38,7 +38,7 @@ QImage convertMat2QImage(const Mat &img)
     }
     default:
     {
-        qDebug() << "Error: Tried to convert an Mat other than CV_8UC3 to QImage!";
+        qDebug() << "Error: Tried to convert an unsupported image format to QImage (Mat must be one of CV_8UC1|CV_8UC3)!";
         return QImage();
         //TODO throw exception
     }
