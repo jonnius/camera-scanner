@@ -159,9 +159,6 @@ bool findQuad(const vector<Border> &candidates,
         if (cornersArea/width/height < 0.25)
             continue;
 
-        imshow("Bla", test);
-        waitKey(0);
-
         // Check if contour is tending to be a axes parallel rectangular
         if (cornersArea/cornersBoxArea < 0.5)
             continue;
