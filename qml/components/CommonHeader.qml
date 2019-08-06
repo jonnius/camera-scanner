@@ -6,6 +6,8 @@ import Ubuntu.Components.Popups 1.3
 
 PageHeader {
     title: i18n.tr('Camera Scanner')
+    
+    signal deleteAllImage()
 
     StyleHints {
         foregroundColor: fgColor
@@ -16,17 +18,41 @@ PageHeader {
     trailingActionBar {
         numberOfSlots: 3
         actions: [
-
+        
             Action {
-                iconName: "info"
-                shortcut: "Ctrl+i"
-                text: i18n.tr("Information")
+                iconName: "save"
+                shortcut: "Ctrl+s"
+                text: i18n.tr("Save")
 
                 onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
+                    var url = ImageProcessing.exportAllAsPdf()
+                    console.log("Share:",url)
+                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
+                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": "export"}))
                 }
             },
+            
+            Action {
+                iconName: "add"
+                shortcut: "Ctrl+a"
+                text: i18n.tr("Add")
 
+                onTriggered: {
+                    Qt.inputMethod.hide();
+                    pageStack.push(Qt.resolvedUrl("../ImportPage.qml"),{"contentType": ContentType.Pictures, "handler": ContentHandler.Source})
+                }
+            },
+            
+            Action {
+                iconName: "delete"
+                shortcut: "Ctrl+d"
+                text: i18n.tr("New Session")
+
+                onTriggered: {
+                    deleteAllImage()
+                }
+            },
+            
             Action {
                 iconName: "settings"
                 shortcut: "Ctrl+e"
@@ -39,26 +65,12 @@ PageHeader {
             },
 
             Action {
-                iconName: "add"
-                shortcut: "Ctrl+a"
-                text: i18n.tr("Add")
+                iconName: "info"
+                shortcut: "Ctrl+i"
+                text: i18n.tr("Information")
 
                 onTriggered: {
-                    Qt.inputMethod.hide();
-                    pageStack.push(Qt.resolvedUrl("../ImportPage.qml"),{"contentType": ContentType.Pictures, "handler": ContentHandler.Source})
-                }
-            },
-
-            Action {
-                iconName: "save"
-                shortcut: "Ctrl+s"
-                text: i18n.tr("Save")
-
-                onTriggered: {
-                    var url = ImageProcessing.exportAllAsPdf()
-                    console.log("Share:",url)
-                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
-                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": "export"}))
+                    pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
                 }
             }
         ]
