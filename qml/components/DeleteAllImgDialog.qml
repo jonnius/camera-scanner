@@ -6,7 +6,7 @@ import ImageProcessing 1.0
 Dialog {
     id: root
 
-    title: i18n.tr("Delete all")
+    title: i18n.tr("New Session")
            
     Label { 
         text: i18n.tr("Are you sure you want to delete all images?")
@@ -16,8 +16,8 @@ Dialog {
     
     Button {
         id: okButton
-        objectName: "okButton"
-        text: i18n.tr("OK")
+        objectName: "deleteButton"
+        text: i18n.tr("Delete")
         color: UbuntuColors.red
 
         onClicked: {

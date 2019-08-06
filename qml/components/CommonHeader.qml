@@ -16,27 +16,19 @@ PageHeader {
     }
 
     trailingActionBar {
-        numberOfSlots: 4
+        numberOfSlots: 3
         actions: [
-
+        
             Action {
-                iconName: "info"
-                shortcut: "Ctrl+i"
-                text: i18n.tr("Information")
+                iconName: "save"
+                shortcut: "Ctrl+s"
+                text: i18n.tr("Save")
 
                 onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
-                }
-            },
-
-            Action {
-                iconName: "settings"
-                shortcut: "Ctrl+e"
-                text: i18n.tr("Settings")
-
-                onTriggered: {
-                    Qt.inputMethod.hide();
-                    pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"));
+                    var url = ImageProcessing.exportAllAsPdf()
+                    console.log("Share:",url)
+                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
+                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": "export"}))
                 }
             },
             
@@ -54,23 +46,31 @@ PageHeader {
             Action {
                 iconName: "delete"
                 shortcut: "Ctrl+d"
-                text: i18n.tr("Delete all")
+                text: i18n.tr("New Session")
 
                 onTriggered: {
                     deleteAllImage()
                 }
             },
-
+            
             Action {
-                iconName: "save"
-                shortcut: "Ctrl+s"
-                text: i18n.tr("Save")
+                iconName: "settings"
+                shortcut: "Ctrl+e"
+                text: i18n.tr("Settings")
 
                 onTriggered: {
-                    var url = ImageProcessing.exportAllAsPdf()
-                    console.log("Share:",url)
-                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
-                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": "export"}))
+                    Qt.inputMethod.hide();
+                    pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"));
+                }
+            },
+
+            Action {
+                iconName: "info"
+                shortcut: "Ctrl+i"
+                text: i18n.tr("Information")
+
+                onTriggered: {
+                    pageStack.push(Qt.resolvedUrl("../InfoPage.qml"));
                 }
             }
         ]
