@@ -6,6 +6,8 @@ import Ubuntu.Components.Popups 1.3
 
 PageHeader {
     title: i18n.tr('Camera Scanner')
+    
+    signal deleteAllImage()
 
     StyleHints {
         foregroundColor: fgColor
@@ -55,8 +57,7 @@ PageHeader {
                 text: i18n.tr("Delete all")
 
                 onTriggered: {
-                    ImageProcessing.removeAll()
-                    mainPage.imageModel.clear();
+                    deleteAllImage()
                 }
             },
 

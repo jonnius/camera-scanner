@@ -26,6 +26,20 @@ Page {
         )
     }
 
+    Component {
+        id: deleteAllDialog
+        
+        DeleteAllImgDialog {}
+    }
+    
+    Connections {
+        target: mainHeader
+
+        onDeleteAllImage: {
+            PopupUtils.open(deleteAllDialog)
+        }
+    }
+    
     Connections {
         target: ImageProcessing
         onImageAdded: imageAdded (id)
