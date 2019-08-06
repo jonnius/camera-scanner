@@ -14,7 +14,7 @@ PageHeader {
     }
 
     trailingActionBar {
-        numberOfSlots: 3
+        numberOfSlots: 4
         actions: [
 
             Action {
@@ -37,7 +37,7 @@ PageHeader {
                     pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"));
                 }
             },
-
+            
             Action {
                 iconName: "add"
                 shortcut: "Ctrl+a"
@@ -46,6 +46,17 @@ PageHeader {
                 onTriggered: {
                     Qt.inputMethod.hide();
                     pageStack.push(Qt.resolvedUrl("../ImportPage.qml"),{"contentType": ContentType.Pictures, "handler": ContentHandler.Source})
+                }
+            },
+            
+            Action {
+                iconName: "delete"
+                shortcut: "Ctrl+d"
+                text: i18n.tr("Delete all")
+
+                onTriggered: {
+                    ImageProcessing.removeAll()
+                    mainPage.imageModel.clear();
                 }
             },
 

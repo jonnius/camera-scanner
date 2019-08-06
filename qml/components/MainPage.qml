@@ -18,7 +18,6 @@ Page {
     }
 
     function imageAdded ( id ) {
-        //console.log("imageAdded() mit " + id +" aufgerufen")
         imageModel.append (
             {
                 imageID: id,
@@ -34,7 +33,6 @@ Page {
 
     ListModel {
         id: imageModel
-        //ListElement {imgout: "/home/phablet/.cache/camerascanner.jonius/jd-da-02.jpg"}
     }
 
     Component {
@@ -153,68 +151,11 @@ Page {
                 overlay.border.width = 10
                 mouse.accepted = false
                 delegateRoot.drag.target = icon
-                deleteIcon.visible = true
             }
 
             onReleased: {
-                /*
-                if (deleteIcon.visible == true)
-                {
-                    ImageProcessing.removeImage ( model.imageID )
-                    imageModel.remove( index )
-
-                    overlay.border.width = 0
-                    delegateRoot.drag.target = undefined
-                    deleteIcon.visible = false
-                }
-                else
-                {
-                    var url = ImageProcessing.exportAsPdf( model.imageID )
-                    console.log("Share:",url)
-                    var sharePopup = PopupUtils.open(shareDialog, mainPage, {"contentType" : ContentType.Documents})
-                    sharePopup.items.push(contentItemComponent.createObject(mainPage, {"url" : url, "text": model.imageID}))
-                }
-                */
                 pageStack.push(Qt.resolvedUrl("../single-image/SingleImage.qml"), {"currentImage": Qt.resolvedUrl(model.imgout), "currentID": model.imageID, "currentIndex": index})
             }
-        }
-    }
-
-    Item {
-        id: topPanel
-
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: mainHeader.bottom
-            topMargin: units.gu(2)
-        }
-
-        height: units.gu(5)
-
-        DropArea {
-            id: deleteDragTarget
-            anchors.fill: parent
-
-            Icon {
-                id: deleteIcon
-                name: "delete"
-                visible: false
-                color: UbuntuColors.red
-                anchors.horizontalCenter: parent.horizontalCenter
-                height: parent.height
-            }
-
-            states: [
-                State {
-                    when: deleteDragTarget.containsDrag
-
-                    PropertyChanges {
-                        target: deleteIcon
-                        color: UbuntuColors.coolGrey
-                    }
-                }
-            ]
         }
     }
 
@@ -222,7 +163,7 @@ Page {
         id: gridview
 
         anchors {
-            top: topPanel.bottom
+            top: mainHeader.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
